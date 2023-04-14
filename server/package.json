@@ -25,6 +25,7 @@
     "form-data": "^4.0.0",
     "ioredis": "^5.3.1",
     "mailgun.js": "^8.2.1",
+    "mongoose": "^7.0.3",
     "openai": "^3.2.1",
     "socket.io": "^4.6.1",
     "uuid": "^9.0.0"

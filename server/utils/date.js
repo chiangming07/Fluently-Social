@@ -1,5 +1,5 @@
-const today = new Date();
-const year = today.getFullYear();
-const month = today.getMonth() + 1;
-const day = today.getDate();
-export const date = `${year}/${month}/${day}`;
+import dayjs from "dayjs";
+dayjs().format();
+
+const today = dayjs();
+export const date = today.format("YYYY/MM/DD");

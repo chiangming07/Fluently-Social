@@ -20,7 +20,7 @@ const messageSchema = new Schema({
   },
   roomId: {
     type: String,
-    // ref: "ChatRoom",
+    ref: "Chatoom",
     required: true,
   },
   createdAt: {
@@ -30,40 +30,6 @@ const messageSchema = new Schema({
 });
 
 export const Message = mongoose.model("Message", messageSchema);
-
-// createNewChat
-//   .save()
-//   .then((savedObject) => console.log("savedObject", savedObject))
-//   .catch((e) => console.log(e));
-
-//   // 儲存使用者資訊的集合
-//   const userSchema = new Schema({
-//     username: { type: String, unique: true }, // 使用者名稱
-//     password: { type: String }, // 使用者密碼
-//     email: { type: String, unique: true }, // 使用者 Email
-//     avatar_path: { type: String } // 使用者頭像路徑
-//   });
-
-// 0414 new schema-----
-// const userSchema = new mongoose.Schema({
-//   name: {
-//     type: String,
-//     required: true
-//   },
-//   email: {
-//     type: String,
-//     required: true,
-//     unique: true
-//   },
-//   password: {
-//     type: String,
-//     required: true
-//   },
-//   createdAt: {
-//     type: Date,
-//     default: Date.now
-//   }
-// });
 
 const messages = [
   {

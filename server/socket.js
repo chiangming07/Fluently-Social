@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-
+import { Message } from "./models/message_model.js";
 const io = new Server({
   cors: {
     origin: "*",
@@ -19,14 +19,45 @@ const createSocketServer = (server) => {
     });
 
     // 一對一聊天室
-    socket.on("chat message", (msg) => {
-      console.log("message: " + msg);
-      io.to(msg[0]).emit("chat message", msg[1]);
+    socket.on("text message", (message) => {
+      const { roomId, senderId, content } = message;
+      console.log("message: " + content);
+      io.to(roomId).emit("text message", content);
+      try {
+        const message = new Message({
+          senderId,
+          content: {
+            type: "text",
+            data: content,
+          },
+          roomId,
+        });
+        message.save();
+        console.log("Message saved successfully");
+      } catch (error) {
+        console.error(error);
+      }
     });
     // TODO: 目前為 base64，到時上傳 S3
-    socket.on("image", (msg) => {
-      io.to(msg[0]).emit("dataUrl", msg[1]);
+    socket.on("image message", (message) => {
+      const { roomId, senderId, content } = message;
+      io.to(roomId).emit("image message", content);
+      try {
+        const message = new Message({
+          senderId,
+          content: {
+            type: "image",
+            data: content,
+          },
+          roomId,
+        });
+        message.save();
+        console.log("Message saved successfully");
+      } catch (error) {
+        console.error(error);
+      }
     });
+
     socket.on("disconnect", () => {
       console.log("user disconnected");
     });

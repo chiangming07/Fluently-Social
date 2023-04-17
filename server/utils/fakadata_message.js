@@ -164,15 +164,76 @@ const messages = [
     senderId: "64393de97ab30f3363549c78",
     content: {
       type: "text",
-      data: "Yes, I love Chinese food too! Some of my favorites are hot pot, Kung Pao chicken, and dumplings. Do you have a favorite Chinese dish that you would recommend?",
+      data: "Yes, I love Chinese food too! Some of my favorites are hot pot, Kung Pao chicken, and dumplings.",
+    },
+    roomId: "49b35ea0-a26d-4e38-914b-aa508479fd1c",
+  },
+  {
+    senderId: "64393de97ab30f3363549c78",
+    content: {
+      type: "text",
+      data: "btw, have you seen the new movie that just came out? I heard it's really good!",
+    },
+    roomId: "49b35ea0-a26d-4e38-914b-aa508479fd1c",
+  },
+  {
+    senderId: "609c11fc17d9fc24d036c45e",
+    content: {
+      type: "text",
+      data: "No, I haven't seen it yet. What's it about?",
+    },
+    roomId: "49b35ea0-a26d-4e38-914b-aa508479fd1c",
+  },
+  {
+    senderId: "64393de97ab30f3363549c78",
+    content: {
+      type: "text",
+      data: "It's a romantic comedy about two people who meet by chance and fall in love. I won't give away too much, but it's really sweet and funny. You should definitely check it out!",
+    },
+    roomId: "49b35ea0-a26d-4e38-914b-aa508479fd1c",
+  },
+  {
+    senderId: "609c11fc17d9fc24d036c45e",
+    content: {
+      type: "text",
+      data: "That sounds like a nice movie. I'll add it to my list. Have you watched any other good movies recently?",
+    },
+    roomId: "49b35ea0-a26d-4e38-914b-aa508479fd1c",
+  },
+  {
+    senderId: "64393de97ab30f3363549c78",
+    content: {
+      type: "text",
+      data: "Yes, I saw a really great documentary about wildlife conservation last week. It was really informative and made me want to learn more about the topic. Have you watched any interesting documentaries lately?",
+    },
+    roomId: "49b35ea0-a26d-4e38-914b-aa508479fd1c",
+  },
+  {
+    senderId: "609c11fc17d9fc24d036c45e",
+    content: {
+      type: "text",
+      data: "Actually, yes! I watched a documentary about the history of the Great Wall of China. It was really fascinating to learn about the construction and purpose of such a famous landmark. Do you have any other documentary recommendations?",
+    },
+    roomId: "49b35ea0-a26d-4e38-914b-aa508479fd1c",
+  },
+  {
+    senderId: "64393de97ab30f3363549c78",
+    content: {
+      type: "text",
+      data: "Definitely! If you're interested in space, you should check out the documentary 'Apollo 11'. It's all about the first moon landing and has some amazing footage. I think you'd really enjoy it.",
     },
     roomId: "49b35ea0-a26d-4e38-914b-aa508479fd1c",
   },
 ];
 
-// try {
-//   const result = await Message.create(messages);
-//   console.log(result);
-// } catch (error) {
-//   console.error(error);
-// }
+const createMessages = async (messages) => {
+  try {
+    for (const message of messages) {
+      await Message.create(message);
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+createMessages(messages);

@@ -57,4 +57,36 @@ const getMessages = async (roomId, senderId, date) => {
   return messageArr.join("\n");
 };
 
-export { Message, getMessages };
+const queryHistory = async (roomId, keyword) => {
+  const searchResult = await Message.aggregate([
+    {
+      $search: {
+        index: "queryHistory",
+        text: {
+          query: `${keyword}`,
+
+          path: "content.data",
+        },
+        highlight: {
+          path: "content.data",
+        },
+      },
+    },
+    { $match: { roomId } },
+    {
+      $project: {
+        senderId: 1,
+        createdAt: 1,
+        highlights: { $meta: "searchHighlights" },
+      },
+    },
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+  ]);
+  return searchResult;
+};
+
+export { Message, getMessages, queryHistory };

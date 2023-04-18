@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import { getAbstract } from "../utils/chatgpt.js";
 import { date } from "../utils/date.js";
+import { Message, getMessages } from "../models/message_model.js";
 
 const mailgun = new Mailgun(formData);
 const client = mailgun.client({
@@ -12,11 +13,10 @@ const client = mailgun.client({
 });
 
 const sendAbstract = async (req, res) => {
-  // TODO: 根據使用者的資料去 query db 拿到今日對話紀錄
-  // const conversation =
-  // const abstract = await getAbstract(conversation);
-  // --- 以下是先寫死版本 ---
-  const abstract = await getAbstract();
+  const { roomId, senderId } = req.body;
+  const conversation = await getMessages(roomId, senderId);
+  const abstract = await getAbstract(conversation, senderId);
+
   const messageData = {
     from: "Fluently 語言交換 <chiangming07@gmail.com>",
     to: "chiangming07@gmail.com",

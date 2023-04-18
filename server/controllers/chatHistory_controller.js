@@ -1,16 +1,11 @@
 import { Message } from "../models/message_model.js";
-
 // TODO: 做 paging
 const getHistory = async (req, res) => {
+  // TODO: query 資料庫的部分移到 model
   const paging = Number(req.query.paging) || 0;
   const { roomId } = req.query;
   const messageNum = 20;
-  // 將 unreadMessages 陣列中的訊息標記為已讀
-  //   const unreadMessages = chatRoom.unreadMessages;
-  //   chatRoom.unreadMessages = [];
-  //   await chatRoom.save();
-
-  // 取得聊天室中的所有訊息
+  // TODO: 更新 User 裡的 lastRead
   const messages = await Message.find({ roomId }).sort({ createdAt: 1 });
   // .skip(paging > 0 ? (paging - 1) * messageNum : 0)
   // .limit(messageNum);
@@ -18,17 +13,6 @@ const getHistory = async (req, res) => {
 };
 
 export { getHistory };
-
-//   取得最後一則訊息的 ID
-//   const lastMessage = await Message.findOne({ roomId: newMessage.roomId })
-// .sort({ createdAt: -1 })
-// .limit(1);
-//   const lastMessageId = lastMessage ? lastMessage._id : null;
-//   將最後一則訊息的 ID 更新到聊天室的 lastMessageRead Map 中
-
-//   const update = { $set: {} };
-//   update.$set[`lastMessageRead.${newMessage.senderId}`] = lastMessageId;
-//   await ChatRoom.findByIdAndUpdate(newMessage.roomId, update);
 
 // const roomId = "49b35ea0-a26d-4e38-914b-aa508479fd1c";
 // const messageNum = 20;

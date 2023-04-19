@@ -64,7 +64,6 @@ const queryHistory = async (roomId, keyword) => {
         index: "queryHistory",
         text: {
           query: `${keyword}`,
-
           path: "content.data",
         },
         highlight: {

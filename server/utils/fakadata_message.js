@@ -1,35 +1,4 @@
-import { mongoose, Schema } from "mongoose";
-import { db } from "../database.js";
-
-const messageSchema = new Schema({
-  senderId: {
-    type: Schema.Types.ObjectId,
-    // ref: "User",
-    required: true,
-  },
-  content: {
-    type: {
-      type: String,
-      enum: ["text", "image"],
-      required: true,
-    },
-    data: {
-      type: String,
-      required: true,
-    },
-  },
-  roomId: {
-    type: String,
-    ref: "Chatoom",
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-export const Message = mongoose.model("Message", messageSchema);
+import { Message } from "../models/message_model.js";
 
 const messages = [
   {

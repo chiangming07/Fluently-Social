@@ -1,6 +1,6 @@
 import { mongoose, Schema } from "mongoose";
 import { db } from "../database.js";
-
+import bcrypt from "bcrypt";
 import { CustomError } from "../middleware/errorHandler.js";
 
 const userSchema = new Schema({
@@ -98,6 +98,7 @@ const registerUser = async (username, email, password, speaking, learning) => {
     const [createdUser] = await User.create([user], { session });
     await session.commitTransaction();
     session.endSession();
+
     const { _id, avatar, online } = createdUser;
     return { _id, avatar, online };
   } catch (error) {
@@ -108,30 +109,33 @@ const registerUser = async (username, email, password, speaking, learning) => {
   }
 };
 
-// const conn = await pool.getConnection();
-// try {
-//   const accessToken = jwt.sign(
-//     {
-//       provider: user.provider,
-//       name: user.name,
-//       email: user.email,
-//       avatar: user.avatar,
-//     },
-//     TOKEN_SECRET
-//   );
-//   user.access_token = accessToken;
+const validateUser = async (email, password) => {
+  const user = await User.findOne({ email });
 
-//   console.log("@signUp", user);
+  if (!user) throw CustomError.UnauthorizedError("Invalid email.");
 
-//   const queryStr = "INSERT INTO user SET ?";
-//   const [result] = await conn.query(queryStr, user);
-//   user.id = result.insertId;
-//   return { user };
-// } catch (error) {
-//   console.log(error);
-//   throw CustomError.CONFLICT("User email already exists.");
-// } finally {
-//   await conn.release();
-// }
+  const passwordMatched = await bcrypt.compare(password, user.password);
 
-export { User, registerUser };
+  if (!passwordMatched)
+    throw CustomError.UnauthorizedError("Invalid password.");
+
+  const filter = { _id: user._id };
+  const update = { loginAt: new Date() };
+  const updatedUser = await User.findOneAndUpdate(filter, update);
+
+  return {
+    user: {
+      id: updatedUser._id,
+      provider: updatedUser.provider,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      avatar: updatedUser.avatar,
+      speaking: updatedUser.speaking,
+      learning: updatedUser.learning,
+      loginAt: updatedUser.loginAt,
+      online: true,
+    },
+  };
+};
+
+export { User, registerUser, validateUser };

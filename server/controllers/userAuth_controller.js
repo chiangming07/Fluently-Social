@@ -1,5 +1,5 @@
 import { CustomError } from "../middleware/errorHandler.js";
-import { registerUser } from "../models/user_model.js";
+import { registerUser, validateUser } from "../models/user_model.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -19,14 +19,19 @@ const validatePassword = (password) => {
     );
 };
 
-const generateAccessToken = ({ username, email, avatar }) => {
-  return jwt.sign({ username, email, avatar }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_ACCESS_EXPIRED,
-  });
+const generateAccessToken = ({ provider, username, email, avatar }) => {
+  return jwt.sign(
+    { provider, username, email, avatar },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_ACCESS_EXPIRED,
+    }
+  );
 };
 
 const signUp = async (req, res) => {
   let { provider, username, email, password, speaking, learning } = req.body;
+
   if (!username || !email || !password || !speaking || !learning)
     throw CustomError.BadRequestError("All fields are required.");
   if (!validator.isLength(username, { min: 2, max: 45 }))
@@ -35,34 +40,59 @@ const signUp = async (req, res) => {
     );
   if (!validator.isEmail(email))
     throw CustomError.BadRequestError("Invalid email format.");
+
   validatePassword(password);
   password = await bcrypt.hash(password, +process.env.SALT);
-  //   const { id, avatar } = await registerUser(
-  const { _id, avatar, online } = await registerUser(
+
+  const { id, avatar, online } = await registerUser(
     username,
     email,
     password,
     speaking,
     learning
   );
-  const payload = { username, email, speaking, learning };
+  const payload = { provider, username, email, avatar };
   const accessToken = generateAccessToken(payload);
+
   return res.json({
-    data: {
-      accessToken,
-      accessExpired: +process.env.JWT_ACCESS_EXPIRED,
-      user: {
-        _id,
-        provider,
-        username,
-        email,
-        avatar,
-        speaking,
-        learning,
-        online,
-      },
+    accessToken,
+    accessExpired: +process.env.JWT_ACCESS_EXPIRED,
+    user: {
+      id,
+      provider,
+      username,
+      email,
+      speaking,
+      learning,
+      online,
     },
   });
 };
 
-export { signUp };
+const nativeSignIn = async (email, password) => {
+  if (!email || !password)
+    throw CustomError.BadRequestError("Email and password are required.");
+
+  const { user } = await validateUser(email, password);
+  return user;
+};
+
+const signIn = async (req, res) => {
+  const { email, password } = req.body;
+  // TODO: 如果有提供不同的登入管道，要在這邊先判斷 provider
+  const user = await nativeSignIn(email, password);
+  const payload = {
+    provider: user.provider,
+    username: user.username,
+    email: user.email,
+    avatar: user.avatar,
+  };
+  const accessToken = generateAccessToken(payload);
+  return res.json({
+    accessToken,
+    accessExpired: +process.env.JWT_ACCESS_EXPIRED,
+    user,
+  });
+};
+
+export { signUp, signIn };

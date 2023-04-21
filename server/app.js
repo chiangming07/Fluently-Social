@@ -1,4 +1,6 @@
 /* eslint-disable no-undef */
+import "express-async-errors";
+
 import dotenv from "dotenv";
 dotenv.config();
 import cors from "cors";
@@ -24,8 +26,14 @@ app.use(cors());
 
 // API routes
 import { router as chatRoute } from "./routes/chat_route.js";
+import { router as userAuthRoute } from "./routes/userAuth_route.js";
 
-app.use("/api/" + process.env.API_VERSION, [chatRoute]);
+app.use("/api/" + process.env.API_VERSION, [chatRoute, userAuthRoute]);
+
+// Error handling
+import { errorHandler } from "./middleware/errorHandler.js";
+
+app.use(errorHandler);
 
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);

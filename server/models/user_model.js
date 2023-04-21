@@ -116,9 +116,13 @@ const getUserInfo = (user) => {
     provider: user.provider,
     username: user.username,
     email: user.email,
+    age: user.age ? user.age : "Not specified",
+    gender: user.gender ? user.gender : "Not specified",
     avatar: user.avatar,
     speaking: user.speaking,
     learning: user.learning,
+    topic: user.topic,
+    chatroom: user.chatroom,
     loginAt: user.loginAt,
     online: true,
   };
@@ -136,7 +140,9 @@ const validateUser = async (email, password) => {
 
   const filter = { _id: user._id };
   const update = { loginAt: new Date() };
-  const updatedUser = await User.findOneAndUpdate(filter, update);
+  const updatedUser = await User.findOneAndUpdate(filter, update, {
+    new: true,
+  });
 
   return {
     user: getUserInfo(updatedUser),
@@ -146,7 +152,9 @@ const validateUser = async (email, password) => {
 const updateUserPreference = async (email, speaking, learning, topic) => {
   const filter = { email };
   const update = { speaking, learning, topic };
-  const updatedUser = await User.findOneAndUpdate(filter, update);
+  const updatedUser = await User.findOneAndUpdate(filter, update, {
+    new: true,
+  });
 
   return {
     user: getUserInfo(updatedUser),

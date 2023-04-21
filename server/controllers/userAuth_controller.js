@@ -113,6 +113,6 @@ const updatePreference = async (req, res) => {
   if (!email || speaking.length < 1 || learning.length < 1 || topic.length < 1)
     throw CustomError.BadRequestError("All fields are required.");
   const user = await updateUserPreference(email, speaking, learning, topic);
-  return res.json({ user });
+  return res.json(user);
 };
 export { signUp, logIn, getUserProfile, updatePreference };

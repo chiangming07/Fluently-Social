@@ -1,6 +1,7 @@
 import { mongoose, Schema } from "mongoose";
 import { db } from "../database.js";
 import bcrypt from "bcrypt";
+
 import { CustomError } from "../middleware/errorHandler.js";
 
 const userSchema = new Schema({
@@ -109,6 +110,20 @@ const registerUser = async (username, email, password, speaking, learning) => {
   }
 };
 
+const getUserInfo = (user) => {
+  return {
+    id: user._id,
+    provider: user.provider,
+    username: user.username,
+    email: user.email,
+    avatar: user.avatar,
+    speaking: user.speaking,
+    learning: user.learning,
+    loginAt: user.loginAt,
+    online: true,
+  };
+};
+
 const validateUser = async (email, password) => {
   const user = await User.findOne({ email });
 
@@ -124,18 +139,18 @@ const validateUser = async (email, password) => {
   const updatedUser = await User.findOneAndUpdate(filter, update);
 
   return {
-    user: {
-      id: updatedUser._id,
-      provider: updatedUser.provider,
-      username: updatedUser.username,
-      email: updatedUser.email,
-      avatar: updatedUser.avatar,
-      speaking: updatedUser.speaking,
-      learning: updatedUser.learning,
-      loginAt: updatedUser.loginAt,
-      online: true,
-    },
+    user: getUserInfo(updatedUser),
   };
 };
 
-export { User, registerUser, validateUser };
+const updateUserPreference = async (email, speaking, learning, topic) => {
+  const filter = { email };
+  const update = { speaking, learning, topic };
+  const updatedUser = await User.findOneAndUpdate(filter, update);
+
+  return {
+    user: getUserInfo(updatedUser),
+  };
+};
+
+export { User, registerUser, validateUser, updateUserPreference };

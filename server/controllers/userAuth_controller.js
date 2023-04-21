@@ -1,11 +1,15 @@
-import { CustomError } from "../middleware/errorHandler.js";
-import { registerUser, validateUser } from "../models/user_model.js";
-
 import dotenv from "dotenv";
 dotenv.config();
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
+
+import { CustomError } from "../middleware/errorHandler.js";
+import {
+  registerUser,
+  validateUser,
+  updateUserPreference,
+} from "../models/user_model.js";
 
 const validatePassword = (password) => {
   if (
@@ -69,7 +73,7 @@ const signUp = async (req, res) => {
   });
 };
 
-const nativeSignIn = async (email, password) => {
+const nativeLogIn = async (email, password) => {
   if (!email || !password)
     throw CustomError.BadRequestError("Email and password are required.");
 
@@ -77,10 +81,10 @@ const nativeSignIn = async (email, password) => {
   return user;
 };
 
-const signIn = async (req, res) => {
+const logIn = async (req, res) => {
   const { email, password } = req.body;
   // TODO: 如果有提供不同的登入管道，要在這邊先判斷 provider
-  const user = await nativeSignIn(email, password);
+  const user = await nativeLogIn(email, password);
   const payload = {
     provider: user.provider,
     username: user.username,
@@ -95,4 +99,20 @@ const signIn = async (req, res) => {
   });
 };
 
-export { signUp, signIn };
+const getUserProfile = async (req, res) => {
+  return res.json({
+    provider: req.payload.provider,
+    username: req.payload.username,
+    email: req.payload.email,
+    avatar: req.payload.avatar,
+  });
+};
+
+const updatePreference = async (req, res) => {
+  const { email, speaking, learning, topic } = req.body;
+  if (!email || speaking.length < 1 || learning.length < 1 || topic.length < 1)
+    throw CustomError.BadRequestError("All fields are required.");
+  const user = await updateUserPreference(email, speaking, learning, topic);
+  return res.json({ user });
+};
+export { signUp, logIn, getUserProfile, updatePreference };

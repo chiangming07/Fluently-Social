@@ -27,8 +27,13 @@ app.use(cors());
 // API routes
 import { router as chatRoute } from "./routes/chat_route.js";
 import { router as userAuthRoute } from "./routes/userAuth_route.js";
+import { router as communityRoute } from "./routes/community_route.js";
 
-app.use("/api/" + process.env.API_VERSION, [chatRoute, userAuthRoute]);
+app.use("/api/" + process.env.API_VERSION, [
+  chatRoute,
+  userAuthRoute,
+  communityRoute,
+]);
 
 // Error handling
 import { errorHandler } from "./middleware/errorHandler.js";

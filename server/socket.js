@@ -1,5 +1,7 @@
 import { Server } from "socket.io";
 import { Message } from "./models/message_model.js";
+import { updateLastMessage } from "./models/chatroom_model.js";
+
 const io = new Server({
   cors: {
     origin: "*",
@@ -23,6 +25,7 @@ const createSocketServer = (server) => {
       const { roomId, senderId, content } = message;
       console.log("message: " + content);
       io.to(roomId).emit("text message", content);
+      const time = Date.now();
       try {
         const message = new Message({
           senderId,
@@ -34,6 +37,7 @@ const createSocketServer = (server) => {
         });
         message.save();
         console.log("Message saved successfully");
+        updateLastMessage(roomId, content);
       } catch (error) {
         console.error(error);
       }
@@ -53,6 +57,7 @@ const createSocketServer = (server) => {
         });
         message.save();
         console.log("Message saved successfully");
+        updateLastMessage(roomId, content);
       } catch (error) {
         console.error(error);
       }

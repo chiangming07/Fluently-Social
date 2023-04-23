@@ -65,6 +65,7 @@ const userSchema = new Schema({
       },
       lastRead: {
         type: Date,
+        default: Date.now,
       },
     },
   ],
@@ -116,8 +117,8 @@ const getUserInfo = (user) => {
     provider: user.provider,
     username: user.username,
     email: user.email,
-    age: user.age ? user.age : "Not specified",
-    gender: user.gender ? user.gender : "Not specified",
+    age: user.age || "Not specified",
+    gender: user.gender || "Not specified",
     avatar: user.avatar,
     speaking: user.speaking,
     learning: user.learning,
@@ -161,4 +162,71 @@ const updateUserPreference = async (email, speaking, learning, topic) => {
   };
 };
 
-export { User, registerUser, validateUser, updateUserPreference };
+const queryAllUsers = async (speaking, learning) => {
+  const user =
+    speaking.length < 1 || learning.length < 1
+      ? await User.find(
+          {},
+          {
+            id: 1,
+            username: 1,
+            avatar: 1,
+            online: 1,
+            learning: 1,
+            speaking: 1,
+            topic: 1,
+          }
+        )
+      : await User.find(
+          {
+            $and: [
+              {
+                $or: speaking.map((pair) => ({
+                  "learning.language": pair.language,
+                })),
+              },
+              {
+                $or: learning.map((pair) => ({
+                  "speaking.language": pair.language,
+                })),
+              },
+              {
+                loginAt: {
+                  $gte: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+                },
+              },
+            ],
+          },
+          {
+            id: 1,
+            username: 1,
+            avatar: 1,
+            online: 1,
+            learning: 1,
+            speaking: 1,
+            topic: 1,
+          }
+        );
+  return user;
+};
+
+const createChatroom = async (roomId, myId, partnerId) => {
+  console.log(roomId, myId, partnerId);
+  const update = {
+    $set: {
+      chatroom: {
+        roomId,
+      },
+    },
+  };
+  await User.updateMany({ _id: { $in: [myId, partnerId] } }, update);
+};
+
+export {
+  User,
+  registerUser,
+  validateUser,
+  updateUserPreference,
+  queryAllUsers,
+  createChatroom,
+};

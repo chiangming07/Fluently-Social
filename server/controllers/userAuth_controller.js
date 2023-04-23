@@ -115,4 +115,5 @@ const updatePreference = async (req, res) => {
   const user = await updateUserPreference(email, speaking, learning, topic);
   return res.json(user);
 };
+
 export { signUp, logIn, getUserProfile, updatePreference };

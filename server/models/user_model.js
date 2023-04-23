@@ -65,6 +65,7 @@ const userSchema = new Schema({
       },
       lastRead: {
         type: Date,
+        default: Date.now,
       },
     },
   ],
@@ -209,10 +210,23 @@ const queryAllUsers = async (speaking, learning) => {
   return user;
 };
 
+const createChatroom = async (roomId, myId, partnerId) => {
+  console.log(roomId, myId, partnerId);
+  const update = {
+    $set: {
+      chatroom: {
+        roomId,
+      },
+    },
+  };
+  await User.updateMany({ _id: { $in: [myId, partnerId] } }, update);
+};
+
 export {
   User,
   registerUser,
   validateUser,
   updateUserPreference,
   queryAllUsers,
+  createChatroom,
 };

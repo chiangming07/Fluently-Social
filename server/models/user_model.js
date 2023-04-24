@@ -211,7 +211,6 @@ const queryAllUsers = async (speaking, learning) => {
 };
 
 const createChatroom = async (roomId, myId, partnerId) => {
-  console.log(roomId, myId, partnerId);
   const update = {
     $set: {
       chatroom: {

@@ -7,11 +7,9 @@ import { queryChatroomList } from "../models/chatroom_model.js";
 // TODO: err handling
 const getRoomId = async (req, res) => {
   const { myId, partnerId } = req.body;
-  console.log(myId);
   const hasChatroom = await Chatroom.findOne({
     members: { $all: [myId, partnerId] },
   });
-  console.log("hasChatroom", hasChatroom);
   let roomId = hasChatroom ? hasChatroom.roomId : uuidv4();
   if (!hasChatroom) {
     const newChatroom = new Chatroom({
@@ -28,7 +26,6 @@ const getChatroomList = async (req, res) => {
   try {
     const userId = req.params.userId;
     const chatroomList = await queryChatroomList(userId);
-    console.log(chatroomList);
     // TODO: 整理
     return res.json(chatroomList);
   } catch (e) {

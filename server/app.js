@@ -29,6 +29,11 @@ import { router as chatRoute } from "./routes/chat_route.js";
 import { router as userAuthRoute } from "./routes/userAuth_route.js";
 import { router as communityRoute } from "./routes/community_route.js";
 
+app.get("/check", (req, res) => {
+  console.log("health checking...");
+  res.status(200).send("OK");
+});
+
 app.use("/api/" + process.env.API_VERSION, [
   chatRoute,
   userAuthRoute,

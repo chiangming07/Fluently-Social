@@ -44,7 +44,6 @@ const updateLastMessage = async (roomId, content) => {
 const queryChatroomList = async (userId) => {
   const ObjectId = mongoose.Types.ObjectId;
   userId = new ObjectId(userId);
-  console.log(userId);
   const chatroomList = await Chatroom.aggregate([
     {
       $match: {
@@ -77,12 +76,12 @@ const queryChatroomList = async (userId) => {
             _id: "$membersInfo._id",
             username: "$membersInfo.username",
             avatar: "$membersInfo.avatar",
+            online: "$membersInfo.online",
           },
         },
       },
     },
   ]);
-  console.log(chatroomList);
   return chatroomList;
 };
 

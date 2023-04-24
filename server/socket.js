@@ -24,8 +24,7 @@ const createSocketServer = (server) => {
     socket.on("text message", (message) => {
       const { roomId, senderId, content } = message;
       console.log("message: " + content);
-      io.to(roomId).emit("text message", content);
-      const time = Date.now();
+      io.to(roomId).emit("text message", message);
       try {
         const message = new Message({
           senderId,
@@ -45,7 +44,7 @@ const createSocketServer = (server) => {
     // TODO: 目前為 base64，到時上傳 S3
     socket.on("image message", (message) => {
       const { roomId, senderId, content } = message;
-      io.to(roomId).emit("image message", content);
+      io.to(roomId).emit("image message", message);
       try {
         const message = new Message({
           senderId,

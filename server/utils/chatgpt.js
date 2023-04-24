@@ -9,7 +9,6 @@ const openai = new OpenAIApi(configuration);
 
 // --- model: "gpt-3.5-turbo" ---
 const getAbstract = async (conversation, senderId) => {
-  // console.log("conversation", conversation);
   const messages = [
     {
       role: "user",

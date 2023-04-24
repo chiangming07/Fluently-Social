@@ -38,9 +38,9 @@ const signUp = async (req, res) => {
 
   if (!username || !email || !password || !speaking || !learning)
     throw CustomError.BadRequestError("All fields are required.");
-  if (!validator.isLength(username, { min: 2, max: 45 }))
+  if (!validator.isLength(username, { min: 2, max: 14 }))
     throw CustomError.BadRequestError(
-      "Username must be between 2-45 characters."
+      "Username must be between 2-14 characters."
     );
   if (!validator.isEmail(email))
     throw CustomError.BadRequestError("Invalid email format.");
@@ -48,7 +48,7 @@ const signUp = async (req, res) => {
   validatePassword(password);
   password = await bcrypt.hash(password, +process.env.SALT);
 
-  const { id, avatar, online } = await registerUser(
+  const { _id, avatar, online } = await registerUser(
     username,
     email,
     password,
@@ -62,7 +62,7 @@ const signUp = async (req, res) => {
     accessToken,
     accessExpired: +process.env.JWT_ACCESS_EXPIRED,
     user: {
-      id,
+      id: _id,
       provider,
       username,
       email,

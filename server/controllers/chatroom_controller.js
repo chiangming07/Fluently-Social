@@ -28,10 +28,9 @@ const getChatroomList = async (req, res) => {
 
   const roomList = chatroomList.map((data) => {
     const { roomId, memberInfo, lastMessage } = data;
-    const time = dayjs(lastMessage.time).format("YYYY/MM/DD HH:mm");
     return {
       roomId,
-      lastMessage: { content: lastMessage.content, time },
+      lastMessage: { content: lastMessage.content, time: lastMessage.time },
       memberInfo: {
         _id: memberInfo._id,
         username: memberInfo.username,
@@ -42,10 +41,20 @@ const getChatroomList = async (req, res) => {
   });
 
   roomList.sort((b, a) => {
-    return new Date(a.lastMessage.time) - new Date(b.lastMessage.time);
+    return a.lastMessage.time - b.lastMessage.time;
   });
 
-  return res.json(roomList);
+  const sortedRoomList = roomList.map((room) => {
+    return {
+      ...room,
+      lastMessage: {
+        ...room.lastMessage,
+        time: dayjs(room.lastMessage.time).format("YYYY/MM/DD HH:mm"),
+      },
+    };
+  });
+
+  return res.json(sortedRoomList);
 };
 
 export { getRoomId, getChatroomList };

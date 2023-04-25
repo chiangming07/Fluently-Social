@@ -1,9 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
-import { Chatroom } from "../models/chatroom_model.js";
-import { createChatroom } from "../models/user_model.js";
 import dayjs from "dayjs";
 
+import { Chatroom } from "../models/chatroom_model.js";
+import { createChatroom } from "../models/user_model.js";
 import { queryChatroomList } from "../models/chatroom_model.js";
+import { generateUploadURL } from "../utils/s3.js";
 
 const getRoomId = async (req, res) => {
   const { myId, partnerId } = req.body;
@@ -57,4 +58,8 @@ const getChatroomList = async (req, res) => {
   return res.json(sortedRoomList);
 };
 
-export { getRoomId, getChatroomList };
+const getUploadURL = async (req, res) => {
+  const { URL, imageName } = await generateUploadURL();
+  res.json({ URL, imageName });
+};
+export { getRoomId, getChatroomList, getUploadURL };

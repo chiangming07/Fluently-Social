@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
 import { Chatroom } from "../models/chatroom_model.js";
 import { createChatroom } from "../models/user_model.js";
+import dayjs from "dayjs";
 
 import { queryChatroomList } from "../models/chatroom_model.js";
 
-// TODO: err handling
 const getRoomId = async (req, res) => {
   const { myId, partnerId } = req.body;
   const hasChatroom = await Chatroom.findOne({
@@ -23,14 +23,38 @@ const getRoomId = async (req, res) => {
 };
 
 const getChatroomList = async (req, res) => {
-  try {
-    const userId = req.params.userId;
-    const chatroomList = await queryChatroomList(userId);
-    // TODO: 整理
-    return res.json(chatroomList);
-  } catch (e) {
-    console.log(e);
-    res.status(500).send({ error: "Internal Server Error" });
-  }
+  const userId = req.params.userId;
+  const chatroomList = await queryChatroomList(userId);
+
+  const roomList = chatroomList.map((data) => {
+    const { roomId, memberInfo, lastMessage } = data;
+    return {
+      roomId,
+      lastMessage: { content: lastMessage.content, time: lastMessage.time },
+      memberInfo: {
+        _id: memberInfo._id,
+        username: memberInfo.username,
+        avatar: memberInfo.avatar,
+        online: memberInfo.online,
+      },
+    };
+  });
+
+  roomList.sort((b, a) => {
+    return a.lastMessage.time - b.lastMessage.time;
+  });
+
+  const sortedRoomList = roomList.map((room) => {
+    return {
+      ...room,
+      lastMessage: {
+        ...room.lastMessage,
+        time: dayjs(room.lastMessage.time).format("YYYY/MM/DD HH:mm"),
+      },
+    };
+  });
+
+  return res.json(sortedRoomList);
 };
+
 export { getRoomId, getChatroomList };

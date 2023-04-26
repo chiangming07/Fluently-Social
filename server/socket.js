@@ -35,8 +35,9 @@ const createSocketServer = (server) => {
           roomId,
         });
         message.save();
+        console.log("message.content", message.content);
         console.log("Message saved successfully");
-        updateLastMessage(roomId, content);
+        updateLastMessage(roomId, message.content);
       } catch (error) {
         console.error(error);
       }
@@ -56,7 +57,7 @@ const createSocketServer = (server) => {
         });
         message.save();
         console.log("Message saved successfully");
-        updateLastMessage(roomId, content);
+        updateLastMessage(roomId, message.content);
       } catch (error) {
         console.error(error);
       }

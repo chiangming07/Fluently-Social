@@ -16,14 +16,30 @@ const chatroomSchema = new Schema({
   //   type: Map,
   //   of: Schema.Types.ObjectId,
   // },
+
   lastMessage: {
     content: {
-      type: String,
+      type: {
+        type: String,
+        enum: ["text", "image"],
+      },
+      data: {
+        type: String,
+      },
     },
     time: {
       type: Date,
     },
   },
+
+  // lastMessage: {
+  //   content: {
+  //     type: String,
+  //   },
+  //   time: {
+  //     type: Date,
+  //   },
+  // },
   createdAt: {
     type: Date,
     default: Date.now,

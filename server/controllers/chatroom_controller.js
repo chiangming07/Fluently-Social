@@ -31,7 +31,10 @@ const getChatroomList = async (req, res) => {
     const { roomId, memberInfo, lastMessage } = data;
     return {
       roomId,
-      lastMessage: { content: lastMessage.content, time: lastMessage.time },
+      lastMessage: {
+        content: lastMessage?.content || null,
+        time: lastMessage?.time || null,
+      },
       memberInfo: {
         _id: memberInfo._id,
         username: memberInfo.username,
@@ -62,4 +65,5 @@ const getUploadURL = async (req, res) => {
   const { URL, imageName } = await generateUploadURL();
   res.json({ URL, imageName });
 };
+
 export { getRoomId, getChatroomList, getUploadURL };

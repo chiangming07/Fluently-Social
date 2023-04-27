@@ -11,7 +11,7 @@ const io = new Server({
 const createSocketServer = (server) => {
   io.attach(server);
   io.on("connection", (socket) => {
-    console.log("a user connected");
+    console.log("a user connected", socket.id);
     socket.on("join-room", (roomId) => {
       socket.join(roomId);
       socket.emit("join-room-message", `You've join ${roomId} room`);
@@ -42,7 +42,7 @@ const createSocketServer = (server) => {
         console.error(error);
       }
     });
-    // TODO: 目前為 base64，到時上傳 S3
+
     socket.on("image message", (message) => {
       const { roomId, senderId, content } = message;
       io.to(roomId).emit("image message", message);
@@ -63,8 +63,30 @@ const createSocketServer = (server) => {
       }
     });
 
-    socket.on("disconnect", () => {
-      console.log("user disconnected");
+    // 匿名聊天
+    socket.on("anonymous", (msg) => {
+      console.log(msg);
+      socket.emit("socketId", socket.id);
+    });
+
+    socket.on("anonymous join room", (roomId) => {
+      console.log(456464645646);
+      socket.join(roomId);
+    });
+
+    socket.on("anonymous text message", (message) => {
+      console.log(message);
+      const { roomId } = message;
+      io.to(roomId).emit("anonymous text message", message);
+    });
+
+    socket.on("anonymous image message", (message) => {
+      const { roomId } = message;
+      io.to(roomId).emit("anonymous image message", message);
+
+      socket.on("disconnect", () => {
+        console.log("user disconnected");
+      });
     });
   });
 };

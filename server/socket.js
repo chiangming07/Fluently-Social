@@ -70,7 +70,6 @@ const createSocketServer = (server) => {
     });
 
     socket.on("anonymous join room", (roomId) => {
-      console.log(456464645646);
       socket.join(roomId);
     });
 

@@ -46,7 +46,9 @@ const matchPartner = async (req, res) => {
     const roomId = await createRoom(socketId, partnerId);
 
     const io = getSocketServer();
-    io.emit("match", roomId);
+
+    io.to(socketId).emit("match", roomId);
+    io.to(partnerId).emit("match", roomId);
     return res.json({ roomId });
   }
 };
@@ -66,43 +68,3 @@ const clearMatch = async (req, res) => {
 };
 
 export { matchPartner, clearMatch };
-
-// sorted set version
-// const getPartner = async (req, res) => {
-//     const { socketId, speaking, learning } = req.body;
-//     // res.cookie("socketId", socketId);
-//     if (!speaking || !learning)
-//       throw CustomError.BadRequestError("All fields are required.");
-
-//     const waitingList = await showList();
-
-//     for (let waitingJSON of waitingList) {
-//       const waitingObj = JSON.parse(waitingJSON);
-//       const partnerId = waitingObj.socketId;
-//       const partnerSpeaking = waitingObj.speaking;
-//       const partnerLearning = waitingObj.learning;
-//       if (socketId === partnerId) {
-//         return res.status(400).json({
-//           error: "正在進行配對中，若想切換配對選擇，請刷新頁面後再次選擇",
-//         });
-//       }
-//       if (speaking === partnerLearning && learning === partnerSpeaking) {
-//         const roomId = await createRoom(socketId, partnerId);
-//         const response = await Cache.zrem("waiting_list", waitingJSON);
-//         if (response !== 1) {
-//           return res
-//             .status(500)
-//             .json({ error: "成功擋住 Race condition 辣！！" });
-//         }
-//         const io = getSocketServer();
-//         io.to(socketId).emit("create-anonymous-room", roomId);
-//         io.to(partnerId).emit("create-anonymous-room", roomId);
-//         return res.json({ msg: "配對成功", roomId });
-//       }
-//     }
-//     const response = await insertList(req.body);
-//     if (response !== 1) {
-//       return res.status(400).json({ error: "您的資料填寫不完全，無法進行配對" });
-//     }
-//     return res.json({ msg: "已加入 waiting list，請稍候" });
-//   };

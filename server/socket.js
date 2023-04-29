@@ -1,4 +1,6 @@
 import { Server } from "socket.io";
+import { Cache } from "./utils/cache.js";
+
 import { Message } from "./models/message_model.js";
 import { updateLastMessage } from "./models/chatroom_model.js";
 
@@ -11,7 +13,7 @@ const io = new Server({
 const createSocketServer = (server) => {
   io.attach(server);
   io.on("connection", (socket) => {
-    console.log("a user connected");
+    console.log("a user connected", socket.id);
     socket.on("join-room", (roomId) => {
       socket.join(roomId);
       socket.emit("join-room-message", `You've join ${roomId} room`);
@@ -42,7 +44,7 @@ const createSocketServer = (server) => {
         console.error(error);
       }
     });
-    // TODO: 目前為 base64，到時上傳 S3
+
     socket.on("image message", (message) => {
       const { roomId, senderId, content } = message;
       io.to(roomId).emit("image message", message);
@@ -63,7 +65,36 @@ const createSocketServer = (server) => {
       }
     });
 
+    // 匿名聊天
+    socket.on("anonymous", (msg) => {
+      console.log(msg);
+      socket.emit("socketId", socket.id);
+    });
+
+    socket.on("anonymous join room", (roomId) => {
+      socket.join(roomId);
+    });
+
+    socket.on("anonymous text message", (msg) => {
+      const { roomId } = msg;
+      io.to(roomId).emit("anonymous text message", msg);
+    });
+
+    socket.on("anonymous image message", (msg) => {
+      const { roomId } = msg;
+      io.to(roomId).emit("anonymous image message", msg);
+    });
+
+    socket.on("leave anonymous chatroom", async (msg) => {
+      const { roomId, socketId } = msg;
+      console.log(msg);
+      await Cache.hdel("anonymousChatRoom", socketId);
+      io.to(roomId).emit("broadcast message", msg);
+    });
+
     socket.on("disconnect", () => {
+      console.log(`User ${socket.id} disconnected.`);
+      // TODO: 監測上下線
       console.log("user disconnected");
     });
   });

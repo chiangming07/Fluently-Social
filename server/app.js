@@ -15,14 +15,18 @@ const port = process.env.PORT || 8080;
 import { createServer } from "http";
 import { createSocketServer } from "./socket.js";
 const server = createServer(app);
-// Socket 設定
+// Socket settings
 createSocketServer(server);
+
+// Cookie settings
+import cookieParser from "cookie-parser";
 
 // Middlewares
 app.use(express.static("./public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cookieParser());
+app.use(cors({ origin: true, credentials: true }));
 
 // API routes
 import { router as chatRoute } from "./routes/chat_route.js";

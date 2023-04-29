@@ -1,4 +1,6 @@
 import { Server } from "socket.io";
+import { Cache } from "./utils/cache.js";
+
 import { Message } from "./models/message_model.js";
 import { updateLastMessage } from "./models/chatroom_model.js";
 
@@ -73,19 +75,27 @@ const createSocketServer = (server) => {
       socket.join(roomId);
     });
 
-    socket.on("anonymous text message", (message) => {
-      console.log(message);
-      const { roomId } = message;
-      io.to(roomId).emit("anonymous text message", message);
+    socket.on("anonymous text message", (msg) => {
+      const { roomId } = msg;
+      io.to(roomId).emit("anonymous text message", msg);
     });
 
-    socket.on("anonymous image message", (message) => {
-      const { roomId } = message;
-      io.to(roomId).emit("anonymous image message", message);
+    socket.on("anonymous image message", (msg) => {
+      const { roomId } = msg;
+      io.to(roomId).emit("anonymous image message", msg);
+    });
 
-      socket.on("disconnect", () => {
-        console.log("user disconnected");
-      });
+    socket.on("leave anonymous chatroom", async (msg) => {
+      const { roomId, socketId } = msg;
+      console.log(msg);
+      await Cache.hdel("anonymousChatRoom", socketId);
+      io.to(roomId).emit("broadcast message", msg);
+    });
+
+    socket.on("disconnect", () => {
+      console.log(`User ${socket.id} disconnected.`);
+      // TODO: 監測上下線
+      console.log("user disconnected");
     });
   });
 };

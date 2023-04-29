@@ -26,7 +26,7 @@ app.use(express.static("./public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
 
 // API routes
 import { router as chatRoute } from "./routes/chat_route.js";

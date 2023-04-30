@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
+import dayjs from "dayjs";
 
 import robot from "../robot.svg";
-
 import api from "../../../utils/api";
-import dayjs from "dayjs";
+
+import { Avatar } from "../Chat.jsx";
 
 const ChatHeaderWrapper = styled.div`
   display: flex;
@@ -28,13 +29,6 @@ const Partner = styled.div`
   height: 80px;
 `;
 
-const Avatar = styled.img`
-  width: ${(props) => (props.chat ? "45px" : "50px")};
-  height: ${(props) => (props.chat ? "45px" : "50px")};
-  margin: ${(props) => (props.chat ? "0 7px" : "0 20px")};
-  border-radius: 50%;
-`;
-
 const PartnerName = styled.div`
   font-size: 24px;
   color: white;
@@ -49,7 +43,7 @@ const Tool = styled.div`
 const SearchHistory = styled.div`
   position: relative;
   width: 300px;
-  --accent-color: #a3e583;
+  --accent-color: #b6e99d;
 
   &:before {
     transition: border-bottom-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
@@ -98,9 +92,8 @@ const SearchHistory = styled.div`
 `;
 
 const TextInput = styled.input`
-  border-radius: 5px 5px 0px 0px;
+  border-radius: 8px;
   box-shadow: 0px 2px 5px rgb(35 35 35 / 30%);
-  max-height: 36px;
   background-color: rgb(99, 137, 95);
   transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
   transition-duration: 200ms;
@@ -177,7 +170,7 @@ const ChatHeader = (props) => {
   const sendAbstract = async () => {
     const data = { roomId, myId };
     const response = await api.sendAbstract(data);
-    if (response.status === 200) alert("已成功寄信，快去查看信箱吧！");
+    if (response.status === 200) alert("Email sent!");
   };
 
   const searchKeyDown = (e) => {
@@ -225,7 +218,7 @@ const ChatHeader = (props) => {
         </SearchHistory>
         <Abstract
           onClick={(e) => {
-            alert("寄信中，請稍候查看信箱");
+            alert("Sending email... Please check it later.");
             sendAbstract(e);
           }}
           icon={robot}
@@ -235,4 +228,4 @@ const ChatHeader = (props) => {
   );
 };
 
-export { ChatHeader, Avatar };
+export default ChatHeader;

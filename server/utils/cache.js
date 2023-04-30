@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 let tls;
-if (process.env.VER === "develop") {
+if (process.env.NODE_ENV === "production") {
   tls = {};
 }
 const Cache = new Redis({

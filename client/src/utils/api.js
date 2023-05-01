@@ -57,6 +57,50 @@ const api = {
     );
     return response;
   },
+  async getPresignedURL(accessToken) {
+    const response = await axios.get(`${this.hostname}/chat/upload-s3`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + accessToken,
+      },
+    });
+    return response;
+  },
+  async uploadToS3(url, data) {
+    const response = await axios.put(url, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response;
+  },
+  async matchPartner(data) {
+    const response = await axios.post(
+      `${this.hostname}/chat/anonymous/match`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+        credentials: "include",
+      }
+    );
+    return response;
+  },
+  async clearMatch() {
+    const response = await axios.delete(
+      `${this.hostname}/chat/anonymous/clearMatch`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+        credentials: "include",
+      }
+    );
+    return response;
+  },
 };
 
 export default api;

@@ -14,12 +14,14 @@ const createSocketServer = (server) => {
   io.attach(server);
   io.on("connection", (socket) => {
     console.log("a user connected", socket.id);
-    socket.on("join-room", (roomId) => {
-      socket.join(roomId);
-      socket.emit("join-room-message", `You've join ${roomId} room`);
-      io.sockets
-        .to(roomId)
-        .emit("room-broadcast", `${socket.id} has join this room`);
+    socket.on("join-room", (currentRoomId) => {
+      socket.join(currentRoomId);
+    });
+
+    socket.on("join-room-list", (chatroomList) => {
+      chatroomList.forEach((list) => {
+        socket.join(list.roomId);
+      });
     });
 
     // 一對一聊天室

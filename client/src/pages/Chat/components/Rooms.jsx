@@ -1,9 +1,10 @@
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import styled from "styled-components";
 
 import { Avatar, TimeMessage } from "../Chat.jsx";
 
+// import { Avatar } from "./ChatHeader.jsx";
 // Rooms (最左)
 const RoomsWrapper = styled.div`
   display: flex;
@@ -87,7 +88,7 @@ const RoomList = ({ chatroomList }) => {
         (chatroom) =>
           chatroom.lastMessage.content && (
             <List
-              key={chatroom._id}
+              key={chatroom.roomId}
               onClick={() => navigate(`/chat/${chatroom.roomId}`)}
             >
               <Avatar src={chatroom.memberInfo.avatar} alt="others' avatar" />
@@ -114,7 +115,7 @@ const Rooms = ({ chatroomList }) => {
     <RoomsWrapper>
       <Name>Chatroom</Name>
       <RoomList chatroomList={chatroomList} />
-      <Anonymous onClick={() => navigate("/chat/anonymous/match")}>
+      <Anonymous onClick={() => navigate("/anonymous")}>
         Anonymous Chat
       </Anonymous>
     </RoomsWrapper>

@@ -1,11 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
 import image from "../../Anonymous/image.svg";
 import send from "../../Anonymous/send.svg";
 
-// import { socket } from "../../../index.js";
 import { socket } from "../../Chat/Chat";
 
 import api from "../../../utils/api";
@@ -50,7 +49,7 @@ const InputBox = styled.div`
   width: 85%;
   height: 4rem;
   margin: 1rem auto;
-  background: #aee2be;
+  background: rgb(214, 236, 221);
   border-radius: 8px;
 `;
 
@@ -153,7 +152,7 @@ const MessageInput = (props) => {
     const message = {
       roomId,
       socketId: myId,
-      content: "Your partner has left the room.",
+      content: "Your partner has left the room🌱",
     };
     socket.emit("leave anonymous chatroom", message);
     setIsMatched(false);

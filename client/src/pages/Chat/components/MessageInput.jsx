@@ -1,11 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
 import image from "../image.svg";
 import send from "../send.svg";
 
-// import { socket } from "../../../index.js";
 import { socket } from "../Chat";
 
 import api from "../../../utils/api";
@@ -23,7 +22,7 @@ const InputBox = styled.div`
   width: 90%;
   height: 4rem;
   margin: 1rem auto;
-  background: #aee2be;
+  background: rgb(214, 236, 221);
   border-radius: 8px;
 `;
 

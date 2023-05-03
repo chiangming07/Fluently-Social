@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 
-import styled from "styled-components";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import api from "../../utils/api";
+import styled from "styled-components/macro";
 
-// import { socket } from "../../index.js";
 import { socket } from "../Chat/Chat";
 
 import MessagesComponent from "./components/Messages";
 import MessageInput from "./components/MessageInput";
 import LanguageSelector from "./components/LanguageSelector";
-import Loading from "./components/Loading";
 import Canvas from "./components/Canvas";
+
+import api from "../../utils/api";
 
 const Wrapper = styled.div`
   display: flex;
@@ -19,6 +20,7 @@ const Wrapper = styled.div`
   height: 100vh;
   overflow: auto;
 `;
+
 const MatchForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -44,6 +46,7 @@ const MatchForm = styled.form`
     background-color: rgba(197, 232, 198, 0.153);
   } */
 `;
+
 const ChatArea = styled.div`
   display: flex;
   flex-direction: column;
@@ -120,6 +123,15 @@ const Anonymous = () => {
     });
   }, []);
 
+  const successNotify = (msg) => {
+    toast.success(msg, {
+      icon: "🌱",
+    });
+  };
+  const errorNotify = (msg) => {
+    toast.error(msg);
+  };
+
   //TODO: 清掉
   //   useEffect(() => {
   //     const clearSocketId = async () => {
@@ -153,14 +165,13 @@ const Anonymous = () => {
       console.log(data);
       const response = await api.matchPartner(data);
       if (response.data.roomId) {
-        // alert("Match Successfully!");
         return;
       }
       const msg = response.data.msg;
-      alert(msg);
+      successNotify(msg);
     } catch (e) {
       const errMsg = e.response.data.message;
-      alert(errMsg);
+      errorNotify(errMsg);
     }
   };
 
@@ -168,13 +179,14 @@ const Anonymous = () => {
     try {
       const response = await api.clearMatch();
       if (response.status === 200)
-        alert("Successfully cleared the matching data");
+        successNotify("Successfully cleared the matching data");
     } catch (e) {
-      alert("You are not in the waiting list. Please try again later.");
+      errorNotify("You are not in the waiting list. Please try again later.");
     }
   };
   return (
     <Wrapper>
+      <ToastContainer />
       <MatchForm disabled={isMatched}>
         <LanguageSelector
           label="I can speak..."

@@ -1,6 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import { useRecoilState } from "recoil";
+import { isLoggedInAtom } from "../../../recoil/atoms";
+
+import styled from "styled-components/macro";
+
 import { Redirect } from "../Style";
 
 import api from "../../../utils/api";
@@ -64,20 +68,15 @@ const ErrorMessage = styled.p`
 
 const Login = () => {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInAtom);
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleError = (e) => {
     if (e.response) {
-      // console.error("Error response:", e.response);
       setError(e.response.data.message);
     }
-    // else if (e.request) {
-    //   console.error("No response received:", e.request);
-    // } else {
-    //   console.error("Request error:", e.message);
-    // }
   };
 
   const handleSubmitClick = async () => {
@@ -90,6 +89,7 @@ const Login = () => {
         const { accessToken, user } = response.data;
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("user", JSON.stringify(user));
+        setIsLoggedIn(true);
         navigate("/profile");
       }
     } catch (e) {

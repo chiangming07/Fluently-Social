@@ -44,7 +44,26 @@ const api = {
     );
     return response;
   },
-
+  async getChatHistory(roomId, paging) {
+    const response = await axios.get(
+      `${this.hostname}/chat/history?roomId=${roomId}&paging=${paging}`
+    );
+    return response;
+  },
+  async sendAbstract(data) {
+    const response = await axios.post(`${this.hostname}/chat/abstract`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response;
+  },
+  async searchHistory(roomId, search) {
+    const response = await axios.get(
+      `${this.hostname}/chat/search-history?roomId=${roomId}&keyword=${search}`
+    );
+    return response;
+  },
   async getChatroomList(userId, accessToken) {
     const response = await axios.get(
       `${this.hostname}/chat/chatroom-list/${userId}`,

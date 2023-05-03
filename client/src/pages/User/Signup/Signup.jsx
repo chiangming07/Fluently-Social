@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import styled from "styled-components";
+import { useState } from "react";
+
 import { Wrapper, Form, Label, Input, Button, ErrorMessage } from "../Style";
 
 import StepOne from "./components/StepOne";

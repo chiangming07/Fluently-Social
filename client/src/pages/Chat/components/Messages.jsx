@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+
+import styled from "styled-components/macro";
+
 import dayjs from "dayjs";
 
-import api from "../../../utils/api";
-
 import { Avatar, TimeMessage } from "../Chat.jsx";
+
+import api from "../../../utils/api";
 
 const Messages = styled.div`
   display: flex;
@@ -43,20 +45,24 @@ const LeftMessage = styled(Message)`
 
 const TextMessage = styled.div`
   padding: 8px 16px;
-  background-color: ${(props) => (props.self ? "#aee2be" : "#e0e9e9")};
+  background-color: ${(props) =>
+    props.self ? "rgb(214, 236, 221)" : "rgb(229 229 229)"};
   border-radius: 16px;
   font-size: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   word-wrap: break-word;
   margin-top: 5px;
+  max-width: 100%;
 `;
 const ImageMessage = styled.img`
   max-width: 100%;
   max-height: 200px;
   margin-bottom: 5px;
-  border: 10px solid ${(props) => (props.self ? "#aee2be" : "#e0e9e9")};
+  border: 10px solid
+    ${(props) => (props.self ? "rgb(214, 236, 221)" : "rgb(229 229 229)")};
   border-radius: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
 `;
 
 const MessagesComponent = (props) => {

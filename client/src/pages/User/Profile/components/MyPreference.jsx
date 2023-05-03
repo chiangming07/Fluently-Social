@@ -1,6 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import styled from "styled-components";
+import styled from "styled-components/macro";
+
 import Topic from "./Topic";
 
 import api from "../../../../utils/api";
@@ -11,7 +14,6 @@ const Wrapper = styled.div`
   align-items: center;
   width: 75%;
   height: 79vh;
-  /* border-left: 3px solid rgba(0, 0, 0, 0.2); */
 `;
 
 const Content = styled.div`
@@ -94,14 +96,31 @@ const Pair = styled.div`
   }
 `;
 
-const MyPreference = () => {
-  const [speaking, setSpeaking] = useState([]);
+const MyPreference = (props) => {
+  const {
+    speaking,
+    setSpeaking,
+    learning,
+    setLearning,
+    selectedTopic,
+    setSelectedTopic,
+  } = props;
+  // const [speaking, setSpeaking] = useState([]);
   const [selectedSpeaking, setSelectedSpeaking] = useState("");
   const [selectedSpeakingLevel, setSelectedSpeakingLevel] = useState("");
-  const [learning, setLearning] = useState([]);
+  // const [learning, setLearning] = useState([]);
   const [selectedLearning, setSelectedLearning] = useState("");
   const [selectedLearningLevel, setSelectedLearningLevel] = useState("");
-  const [selectedTopic, setSelectedTopic] = useState([]);
+  // const [selectedTopic, setSelectedTopic] = useState([]);
+
+  const successNotify = (msg) => {
+    toast.success(msg, {
+      icon: "🌱",
+    });
+  };
+  const errorNotify = (msg) => {
+    toast.error(msg);
+  };
 
   const handleAddLanguage = (type) => {
     let newLanguage, newLevel, newItems;
@@ -136,21 +155,21 @@ const MyPreference = () => {
       const user = response.data.user;
       localStorage.setItem("user", JSON.stringify(user));
       if (response.status === 200) {
-        alert("Preference updated!");
+        successNotify("Preference updated!");
       }
     } catch (e) {
       console.log(e);
-      alert("Before updating, you must re-select all preferences.");
+      errorNotify("Before updating, you must re-select all preferences.");
     }
   };
   return (
     <Wrapper>
+      <ToastContainer />
       <Content>
         <Row>
           <Label>Speaking</Label>
           <SelectWrapper>
             <Select
-              defaultValue=""
               value={selectedSpeaking}
               onChange={(e) => setSelectedSpeaking(e.target.value)}
             >
@@ -163,7 +182,6 @@ const MyPreference = () => {
               <option value="JP">Japanese</option>
             </Select>
             <Select
-              defaultValue=""
               value={selectedSpeakingLevel}
               onChange={(e) => setSelectedSpeakingLevel(e.target.value)}
             >
@@ -194,8 +212,8 @@ const MyPreference = () => {
           </SelectWrapper>
         </Row>
         <Pair>
-          {speaking.map((item) => (
-            <div key={item.language}>
+          {speaking.map((item, index) => (
+            <div key={index}>
               <span>{item.language} - </span>
               <span>{item.level}</span>
             </div>
@@ -205,7 +223,6 @@ const MyPreference = () => {
           <Label>Learning</Label>
           <SelectWrapper>
             <Select
-              defaultValue=""
               value={selectedLearning}
               onChange={(e) => setSelectedLearning(e.target.value)}
             >
@@ -218,7 +235,6 @@ const MyPreference = () => {
               <option value="JP">Japanese</option>
             </Select>
             <Select
-              defaultValue=""
               value={selectedLearningLevel}
               onChange={(e) => setSelectedLearningLevel(e.target.value)}
             >
@@ -250,8 +266,8 @@ const MyPreference = () => {
           </SelectWrapper>
         </Row>
         <Pair>
-          {learning.map((item) => (
-            <div key={item.language}>
+          {learning.map((item, index) => (
+            <div key={index}>
               <span>{item.language} - </span>
               <span>{item.level}</span>
             </div>

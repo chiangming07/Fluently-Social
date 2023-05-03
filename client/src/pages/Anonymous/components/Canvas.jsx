@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
 import gsap from "gsap";
 

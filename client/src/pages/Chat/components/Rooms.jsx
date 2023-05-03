@@ -4,7 +4,6 @@ import styled from "styled-components";
 
 import { Avatar, TimeMessage } from "../Chat.jsx";
 
-// import { Avatar } from "./ChatHeader.jsx";
 // Rooms (最左)
 const RoomsWrapper = styled.div`
   display: flex;
@@ -21,7 +20,7 @@ const Name = styled.div`
   background: rgb(99, 137, 95);
   color: white;
   text-align: left;
-  padding-left: 2.1em;
+  padding-left: 2em;
   line-height: 80px;
   letter-spacing: 5px;
   font-size: 28px;
@@ -39,24 +38,13 @@ const List = styled.div`
   align-items: center;
   width: 100%;
   height: 100.3px;
+  padding-left: 1em;
   background: white;
   border-bottom: 2px solid rgb(99, 137, 95, 0.1);
   cursor: pointer;
   &:hover {
-    background: #cbeb9352;
+    background: rgba(184, 230, 195, 0.212);
   }
-`;
-
-const Anonymous = styled.div`
-  width: 100%;
-  background: rgb(99, 137, 95);
-  color: white;
-  text-align: center;
-  line-height: 80px;
-  letter-spacing: 2px;
-  font-size: 28px;
-  border-radius: 0 10px 0 0;
-  cursor: pointer;
 `;
 
 const OtherName = styled.div`
@@ -75,6 +63,7 @@ const LastMessage = styled.div`
   text-overflow: ellipsis;
   max-width: 150px;
 `;
+
 const ChatroomDetail = styled.div`
   display: block;
 `;
@@ -115,9 +104,6 @@ const Rooms = ({ chatroomList }) => {
     <RoomsWrapper>
       <Name>Chatroom</Name>
       <RoomList chatroomList={chatroomList} />
-      <Anonymous onClick={() => navigate("/anonymous")}>
-        Anonymous Chat
-      </Anonymous>
     </RoomsWrapper>
   );
 };

@@ -1,12 +1,12 @@
-// import { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled from "styled-components/macro";
+
+import member from "./member.svg";
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 70%;
+  width: 75%;
   height: 79vh;
-  /* border-left: 3px solid rgba(0, 0, 0, 0.2); */
 `;
 
 const Name = styled.h2`
@@ -27,7 +27,6 @@ const AvatarWrapper = styled.div`
     left: 0;
     right: 0;
     height: 1px;
-    /* box-shadow: 0 0 5px rgba(154, 161, 157, 0.989); */
     border-bottom: 5px solid rgba(201, 207, 203, 0.52);
   }
 `;
@@ -67,12 +66,12 @@ const Value = styled.p`
 `;
 
 const MyInfo = (props) => {
-  const { username, email, gender, age } = props;
+  const { avatar, username, email, gender, age } = props;
 
   return (
     <Wrapper>
       <AvatarWrapper>
-        <Avatar src="https://i.pravatar.cc/300" alt="avatar" />
+        <Avatar src={avatar !== "" ? avatar : member} alt="avatar" />
         <Name>{username}</Name>
       </AvatarWrapper>
       <InfoWrapper>

@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 
-import styled from "styled-components";
+import styled from "styled-components/macro";
+
 import dayjs from "dayjs";
 
-// const Avatar = styled.img`
-//   width: ${(props) => (props.chat ? "45px" : "50px")};
-//   height: ${(props) => (props.chat ? "45px" : "50px")};
-//   margin: ${(props) => (props.chat ? "0 7px" : "0 20px")};
-//   border-radius: 50%;
-// `;
+const Avatar = styled.img`
+  width: ${(props) => (props.chat ? "45px" : "50px")};
+  height: ${(props) => (props.chat ? "45px" : "50px")};
+  margin: ${(props) => (props.chat ? "0 7px" : "0 20px")};
+  border-radius: 50%;
+`;
 
 const TimeMessage = styled.span`
   font-size: 12px;
@@ -55,21 +56,25 @@ const LeftMessage = styled(Message)`
 
 const TextMessage = styled.div`
   padding: 8px 16px;
-  background-color: ${(props) => (props.self ? "#aee2be" : "#e0e9e9")};
+  background-color: ${(props) =>
+    props.self ? "rgb(214, 236, 221)" : "rgb(229 229 229)"};
   border-radius: 16px;
   font-size: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   word-wrap: break-word;
   margin-top: 5px;
   margin-bottom: 5px;
+  max-width: 100%;
 `;
 const ImageMessage = styled.img`
   max-width: 100%;
   max-height: 200px;
   margin-bottom: 5px;
-  border: 10px solid ${(props) => (props.self ? "#aee2be" : "#e0e9e9")};
+  border: 10px solid
+    ${(props) => (props.self ? "rgb(214, 236, 221)" : "rgb(229 229 229)")};
   border-radius: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
 `;
 
 const BroadCastMessage = styled(TextMessage)`
@@ -83,6 +88,7 @@ const MessagesComponent = (props) => {
   const messagesEndRef = useRef(null);
 
   const [chat, setChat] = useState([]);
+  const [partnerData, setPartnerData] = useState({});
 
   // 向下滾動
   const scrollToBottom = () => {
@@ -95,7 +101,7 @@ const MessagesComponent = (props) => {
 
   // socket
   useEffect(() => {
-    socket.emit("join-room", roomId);
+    // socket.emit("join-room", roomId);
     const timestamp = dayjs().format("YYYY/MM/DD HH:mm");
     socket.on("anonymous text message", (message) => {
       setChat((chat) => [
@@ -132,12 +138,13 @@ const MessagesComponent = (props) => {
     return () => {
       socket.off("anonymous text message");
       socket.off("anonymous image message");
+      socket.off("broadcast message");
     };
   }, [myId, roomId]);
 
   return (
     <Messages>
-      <BroadCastMessage>Match Successfully</BroadCastMessage>
+      <BroadCastMessage>Match Successfully🌱</BroadCastMessage>
       {chat.map((msg) => {
         const isSelf = msg.senderId === myId;
         return (
@@ -156,7 +163,7 @@ const MessagesComponent = (props) => {
               </RightMessage>
             ) : (
               <Message>
-                {/* <Avatar chat src={}></Avatar> */}
+                {/* <Avatar chat src={partnerData.avatar}></Avatar> */}
                 <LeftMessage>
                   <TimeMessage>{msg.timestamp}</TimeMessage>
                   {msg.type === "text" ? (

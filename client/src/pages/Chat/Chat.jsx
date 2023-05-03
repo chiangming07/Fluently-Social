@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import styled from "styled-components";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import styled from "styled-components/macro";
 import dayjs from "dayjs";
 import { io } from "socket.io-client";
 
@@ -35,7 +38,6 @@ const ChatMask = styled.div`
   background-size: 20px 20px;
   background-image: linear-gradient(to right, #e9e6e68f 1px, transparent 1px),
     linear-gradient(to bottom, #e9e6e68f 1px, transparent 1px);
-  /* background-color: rgba(0, 0, 0, 0.2); */
   z-index: 10;
 `;
 
@@ -70,7 +72,7 @@ const Avatar = styled.img`
 
 const TimeMessage = styled.span`
   font-size: 12px;
-  color: #999;
+  color: #323232;
   text-align: right;
   margin: 0 5px;
 `;
@@ -89,12 +91,21 @@ const Chat = () => {
 
   const roomId = location.pathname.split("/chat/")[1];
 
+  const errorNotify = (msg) => {
+    toast.error(msg, {
+      position: "top-center",
+      autoClose: 1500,
+      onClose: () => {
+        navigate("/login");
+      },
+    });
+  };
+
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
 
     if (!accessToken) {
-      alert("Please log in to continue.");
-      navigate("/login");
+      errorNotify("Please log in to continue.");
       return;
     }
 
@@ -115,8 +126,7 @@ const Chat = () => {
         }
       } catch (e) {
         console.log(e.response.data.message);
-        alert("Connection timed out. Please log in again.");
-        navigate("/login");
+        errorNotify("Connection timed out. Please log in again.");
         return;
       }
     };
@@ -129,14 +139,12 @@ const Chat = () => {
     socket.on("connect", () => {
       console.log("A user connected.");
     });
-
     socket.emit("join-room", roomId);
   }, [roomId]);
 
   // websocket
   useEffect(() => {
     const updateChatroomList = (message) => {
-      console.log("同一房的 update");
       const { roomId, content, type } = message;
       if (chatroomList.length === 0) return;
       const hasChatroom = chatroomList.some(
@@ -192,6 +200,7 @@ const Chat = () => {
             timestamp,
           },
         ]);
+        console.log("同一房的 update");
         updateChatroomList(message);
       } else {
         console.log("不同房的 update");
@@ -226,6 +235,7 @@ const Chat = () => {
 
   return (
     <Wrapper>
+      <ToastContainer />
       <Rooms chatroomList={chatroomList}></Rooms>
       {!roomId ? (
         <ChatMask>

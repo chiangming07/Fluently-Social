@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import styled from "styled-components";
+
+import styled from "styled-components/macro";
 
 // Sign up
-
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -182,7 +182,6 @@ const Redirect = styled(Link)`
 `;
 
 // Profile
-
 const Container = styled.div`
   display: flex;
   justify-content: center;
@@ -248,17 +247,6 @@ const GenderOption = styled.div`
     cursor: pointer;
   }
 `;
-
-// const Button = styled.span`
-//   padding: 10px 20px;
-//   font-size: 16px;
-//   font-weight: bold;
-//   color: #fff;
-//   background-color: #007bff;
-//   border: none;
-//   border-radius: 5px;
-//   cursor: pointer;
-// `;
 
 export {
   Wrapper,

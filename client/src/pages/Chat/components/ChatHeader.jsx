@@ -1,5 +1,8 @@
-import { useState, useEffect } from "react";
-import styled from "styled-components";
+import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import styled from "styled-components/macro";
 import dayjs from "dayjs";
 
 import robot from "../robot.svg";
@@ -12,15 +15,12 @@ const ChatHeaderWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 80px;
-  background-color: #bec5a6;
+  background-color: rgb(137 176 136);
   background-size: 30px 30px, 30px 30px;
-  box-shadow: -2px 3px 10px 0px #bec5a6;
+  box-shadow: -2px 3px 10px 0px rgb(137 176 136);
   background-size: 20px 20px;
-  background-image: radial-gradient(circle, #ffffff 1px, rgba(0, 0, 0, 0) 1px);
   border-radius: 0 0 10px 10px;
   background-size: 20px 20px;
-  background-image: linear-gradient(to right, #e9e6e68f 1px, transparent 1px),
-    linear-gradient(to bottom, #e9e6e68f 1px, transparent 1px);
 `;
 
 const Partner = styled.div`
@@ -168,9 +168,17 @@ const ChatHeader = (props) => {
   const [search, setSearch] = useState("");
 
   const sendAbstract = async () => {
+    const id = toast.loading("Sending email, please check your mailbox later.");
     const data = { roomId, myId };
     const response = await api.sendAbstract(data);
-    if (response.status === 200) alert("Email sent!");
+    if (response.status === 200)
+      toast.update(id, {
+        render: "Email sent successfully. Please check your mailbox!",
+        type: "success",
+        icon: "🌱",
+        isLoading: false,
+        autoClose: 5000,
+      });
   };
 
   const searchKeyDown = (e) => {
@@ -180,7 +188,7 @@ const ChatHeader = (props) => {
         setSearch("");
         const sortChatHistory = async (roomId, search) => {
           const response = await api.searchHistory(roomId, search);
-          console.log(response);
+
           const searchResult = response.data.map((msg) => {
             const time = dayjs(msg.createdAt).format("YYYY/MM/DD HH:mm");
             return {
@@ -198,33 +206,36 @@ const ChatHeader = (props) => {
   };
 
   return (
-    <ChatHeaderWrapper>
-      <Partner>
-        <Avatar src={partnerData.avatar}></Avatar>
-        <PartnerName>{partnerData.username}</PartnerName>
-        {/* <PartnerStatus></PartnerStatus> */}
-      </Partner>
-      <Tool>
-        <SearchHistory>
-          <TextInput
-            placeholder="Search"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setCurrentSearch(e.target.value);
+    <>
+      <ToastContainer />
+
+      <ChatHeaderWrapper>
+        <Partner>
+          <Avatar src={partnerData.avatar}></Avatar>
+          <PartnerName>{partnerData.username}</PartnerName>
+          {/* <PartnerStatus></PartnerStatus> */}
+        </Partner>
+        <Tool>
+          <SearchHistory>
+            <TextInput
+              placeholder="Search"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentSearch(e.target.value);
+              }}
+              onKeyDown={(e) => searchKeyDown(e)}
+            ></TextInput>
+          </SearchHistory>
+          <Abstract
+            onClick={(e) => {
+              sendAbstract(e);
             }}
-            onKeyDown={(e) => searchKeyDown(e)}
-          ></TextInput>
-        </SearchHistory>
-        <Abstract
-          onClick={(e) => {
-            alert("Sending email... Please check it later.");
-            sendAbstract(e);
-          }}
-          icon={robot}
-        />
-      </Tool>
-    </ChatHeaderWrapper>
+            icon={robot}
+          />
+        </Tool>
+      </ChatHeaderWrapper>
+    </>
   );
 };
 

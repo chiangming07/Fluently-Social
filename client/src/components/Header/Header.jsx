@@ -1,11 +1,17 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import styled from "styled-components";
+import { useRecoilValue } from "recoil";
+import { isLoggedInAtom } from "../../recoil/atoms";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import styled from "styled-components/macro";
 
 import logo from "./logo2.png";
-// import search from "./search.png";
-// 要把用戶的照片傳進來
-import avatar from "./cat.PNG";
+import member from "./member.svg";
+
+import api from "../../utils/api";
 
 const Wrapper = styled.div`
   display: flex;
@@ -16,8 +22,8 @@ const Wrapper = styled.div`
   z-index: 99;
   height: 100px;
   width: 100%;
-  padding: 0 60px 0 60px;
-  background: rgb(99, 137, 95);
+  padding: 0 4%;
+  background: #63895f;
   box-shadow: 0 1px 10px rgb(184, 223, 173, 0.4);
 `;
 
@@ -29,16 +35,14 @@ const Logo = styled(Link)`
   background-image: url(${logo});
   background-size: contain;
   background-repeat: no-repeat;
+  cursor: pointer;
+
   &:hover {
-    cursor: pointer;
-    text-decoration: none;
     &::after {
       content: "";
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      width: 30%;
-      border-radius: 4px;
       animation: underline 0.3s ease forwards;
       box-shadow: -25px 25px 500px 40px rgb(0, 230, 0, 0.5);
     }
@@ -53,42 +57,38 @@ const Logo = styled(Link)`
     }
   }
 `;
+
 const Navbar = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
 `;
+
 const CategoryLinks = styled.div``;
 
 const CategoryLink = styled.a`
   position: relative;
-  padding-left: 20px;
-  padding-right: 10px;
+  margin-right: 20px;
   font-size: 20px;
   letter-spacing: 2px;
   color: white;
-  /* &:hover {
-    box-shadow: 0 0 20px 5px #d9b99a;
-    background: rgb(248, 242, 237, 0.3);
-    border-radius: 10px;
-    cursor: pointer;
-  } */
+  text-align: center;
+  cursor: pointer;
+
   &:hover {
-    cursor: pointer;
     text-decoration: none;
     &::after {
       content: "";
+      padding-left: 10px;
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
       bottom: -7px;
-      width: 30%;
       height: 0.5px;
       background-color: #d9b99a;
-      border-radius: 4px;
       animation: underline 0.3s ease forwards;
-      box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.8);
+      box-shadow: 0 1px 5px 1px rgba(255, 255, 255, 0.8);
     }
   }
 
@@ -97,16 +97,12 @@ const CategoryLink = styled.a`
       width: 0;
     }
     to {
-      width: 70%;
+      width: 90%;
     }
   }
 `;
 
-const Profile = styled.div``;
-
-const ProfileLink = styled(Link)``;
-
-const Avatar = styled.div`
+const ProfileAvatar = styled.img`
   position: relative;
   width: 50px;
   height: 50px;
@@ -121,10 +117,6 @@ const Avatar = styled.div`
   }
 `;
 
-const ProfileIcon = styled(Avatar)`
-  background-image: url(${avatar});
-`;
-
 const categories = [
   {
     name: "community",
@@ -135,25 +127,55 @@ const categories = [
     displayText: "Chat",
   },
   {
-    // name: "notes",
-    // displayText: "筆記",
-    name: "nearme",
-    displayText: "Nearme",
+    name: "Anonymous",
+    displayText: "Anonymous",
   },
 ];
 
 function Header() {
-  const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const isLoggedIn = useRecoilValue(isLoggedInAtom);
+
+  const [inputValue, setInputValue] = useState("");
   const category = searchParams.get("category");
+  const [profileAvatar, setProfileAvatar] = useState("");
+
+  const errorNotify = (msg) => {
+    toast.error(msg, {
+      position: "top-center",
+      autoClose: 1500,
+      onClose: () => {
+        navigate("/login");
+      },
+    });
+  };
 
   useEffect(() => {
     if (category) setInputValue("");
   }, [category]);
+  console.log(isLoggedIn);
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    const renderAvatar = async (accessToken) => {
+      try {
+        const response = await api.getProfile(accessToken);
+        if (response.status === 200) {
+          const profileAvatar = response.data.avatar;
+          setProfileAvatar(profileAvatar);
+        }
+      } catch (e) {
+        localStorage.clear();
+        setProfileAvatar("");
+        return;
+      }
+    };
+    renderAvatar(accessToken);
+  }, [isLoggedIn]);
 
   return (
     <Wrapper>
+      <ToastContainer />
       <Logo to="/" />
       <Navbar>
         <CategoryLinks>
@@ -162,10 +184,10 @@ function Header() {
               $isActive={category === name}
               key={index}
               onClick={() => {
-                window.scrollTo({
-                  top: 0,
-                  behavior: "smooth",
-                });
+                if (!isLoggedIn) {
+                  errorNotify("Please log in to continue.");
+                  return;
+                }
                 navigate(name);
               }}
             >
@@ -173,20 +195,17 @@ function Header() {
             </CategoryLink>
           ))}
         </CategoryLinks>
-        {/* <SearchInput
-        onKeyPress={(e) => {
-          if (e.key === "Enter") {
-            navigate(`/?keyword=${inputValue}`);
-          }
-        }}
-        onChange={(e) => setInputValue(e.target.value)}
-        value={inputValue}
-      /> */}
-        <Profile>
-          <ProfileLink to="/profile">
-            <ProfileIcon icon={avatar}></ProfileIcon>
-          </ProfileLink>
-        </Profile>
+        <ProfileAvatar
+          src={profileAvatar !== "" ? profileAvatar : member}
+          onClick={() => {
+            if (!isLoggedIn) {
+              errorNotify("Please log in to continue.");
+              return;
+            }
+            navigate("./profile");
+          }}
+          alt="avatar"
+        />
       </Navbar>
     </Wrapper>
   );

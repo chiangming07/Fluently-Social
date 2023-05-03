@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
 const SearchResult = styled.div`
   display: flex;
@@ -12,51 +12,59 @@ const SearchResult = styled.div`
     linear-gradient(to bottom, #e9e6e68f 1px, transparent 1px);
 `;
 
-const CloseButton = styled.button`
-  position: absolute;
-  top: 30px;
-  right: 45px;
-  background-color: #bec5a6;
+const SearchBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: rgb(214, 236, 221);
+  border-radius: 8px;
+  margin-bottom: 2%;
+`;
+
+const CloseButton = styled.span`
+  background-color: rgb(137 176 136);
   color: #fff;
   border: none;
   width: 32px;
   height: 32px;
   border-radius: 50%;
   font-size: 16px;
+  line-height: 32px;
+  text-align: center;
   cursor: pointer;
   &:hover {
-    background-color: #2e8b57;
+    background-color: rgb(99, 137, 95);
     color: #fff;
     transform: scale(1.2);
   }
 `;
 
-const SearchKeyword = styled.span`
+const SearchKeyword = styled.div`
   margin: 10px 0;
-  background-color: #cbeb93b1;
-  padding: 10px;
-  font-size: 16spx;
+  font-size: 20px;
   font-weight: bold;
-  border-radius: 4px;
+  letter-spacing: 0.05rem;
 `;
 
 const SearchResultItem = styled.div`
   padding: 8px 16px;
-  border-radius: 16px;
+  border-radius: 8px;
   box-shadow: 0 2px 3px rgba(61, 61, 57, 0.6);
   margin-bottom: 10px;
+  letter-spacing: 0.03rem;
 `;
 
 const SearchResultTime = styled.div`
   color: #666;
-  font-size: 14px;
+  font-size: 12px;
   margin-bottom: 5px;
 `;
 
 const SearchResultHighLight = styled.span`
-  background-color: #cbeb93b1;
+  background-color: rgb(214, 236, 221);
   color: #666;
-  border-radius: 50%;
+  border-radius: 4px;
   font-size: 16px;
 `;
 
@@ -69,10 +77,13 @@ const SearchResultComponent = (props) => {
   const { searchResult, currentSearch, setSearchResult } = props;
   return (
     <SearchResult>
-      <CloseButton onClick={() => setSearchResult([])}>X</CloseButton>
-      <SearchKeyword>{currentSearch}</SearchKeyword>
+      <SearchBar>
+        <SearchKeyword>Keyword: {currentSearch}</SearchKeyword>
+        <CloseButton onClick={() => setSearchResult([])}>X</CloseButton>
+      </SearchBar>
+
       {searchResult.map((result) => (
-        <SearchResultItem key={result._id}>
+        <SearchResultItem key={result.id}>
           <SearchResultTime>{result.timestamp}</SearchResultTime>
           {result.data.map((item, index) =>
             item.type === "hit" ? (

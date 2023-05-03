@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
 const topics = [
   "Travel",
@@ -42,15 +41,11 @@ const Checkbox = styled.input.attrs({ type: "checkbox" })`
     content: "\\1F331";
     width: 20px;
     height: 20px;
-    line-height: 15px;
-    text-align: center;
-    /* color: white; */
-    border: 1px solid #b0d7a1;
+    line-height: 0px;
+    border: 1px solid #dcb63064;
+    background-color: #dcb63064;
     border-radius: 5px;
-  }
-
-  &:hover:not(:checked) ~ label::before {
-    background-color: #b0d7a1;
+    transition: all 0.2s ease-in-out;
   }
 `;
 

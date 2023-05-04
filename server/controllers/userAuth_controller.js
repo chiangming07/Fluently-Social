@@ -109,10 +109,10 @@ const getUserProfile = async (req, res) => {
 };
 
 const updatePreference = async (req, res) => {
-  const { email, speaking, learning, topic } = req.body;
-  if (!email || speaking.length < 1 || learning.length < 1 || topic.length < 1)
+  const { _id, speaking, learning, topic } = req.body;
+  if (!_id || speaking.length < 1 || learning.length < 1 || topic.length < 1)
     throw CustomError.BadRequestError("All fields are required.");
-  const user = await updateUserPreference(email, speaking, learning, topic);
+  const user = await updateUserPreference(_id, speaking, learning, topic);
   return res.json(user);
 };
 

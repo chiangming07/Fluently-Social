@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import styled from "styled-components/macro";
@@ -18,10 +18,11 @@ const Wrapper = styled.div`
 
 const UserArea = styled.div`
   display: flex;
-  justify-content: space-evenly;
+  /* justify-content: space-evenly; */
   flex-wrap: wrap;
   margin: 0 auto;
   width: 95%;
+  max-width: 1900px;
   margin-top: 150px;
 `;
 
@@ -30,52 +31,80 @@ const User = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  width: 23%;
-  height: 50vh;
-  margin-bottom: 2%;
-  background-color: #f3f8ed;
+  width: 21%;
+  height: 35vh;
+  margin: 0 2% 3% 2%;
+  background-color: rgb(236, 244, 232);
+  background-size: cover;
   border-radius: 8px;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.12);
-  padding: 20px;
-  transition: 0.2s ease-in-out;
-
+  padding: 1%;
+  transform-style: preserve-3d;
+  transition: transform 300ms;
+  box-shadow: 0px 0px 20px 1px #d5d5d5ee;
   &:hover {
-    box-shadow: 0 8px 50px #23232333;
-    transform: translateY(3%);
+    transform: rotateY(180deg);
   }
+  &::before {
+    content: "";
+    position: absolute;
+    bottom: 90%;
+    right: 10;
+    width: 12%;
+    height: 25%;
+    background-color: #ebe1b1de;
+    transform: rotate(94deg);
+    z-index: 1;
+  }
+  &:hover::before {
+    opacity: 0;
+  }
+`;
+
+const Back = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 100%;
+  height: 35vh;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 5px;
+  overflow: hidden;
 `;
 
 const AvatarContainer = styled.div`
   position: relative;
-  width: 100px;
-  min-height: 100px;
+  width: 36%;
+  margin: 0 auto;
 `;
+
+const AvatarWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
 const Avatar = styled.img`
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   border-radius: 50%;
 `;
 
 const Online = styled.div`
   position: absolute;
-  bottom: 5px;
-  right: -15px;
-  transform: translateX(-50%);
+  bottom: 5%;
+  right: 2%;
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  border: 4px solid white;
+  border: 4px solid rgb(236, 244, 232);
   background-color: ${(props) => (props.online ? "green" : "gray")};
 `;
 
 const UserName = styled.h2`
   font-size: 20px;
-  margin: 10px 0;
+  margin: 4% 0;
+  text-align: center;
 `;
-
-const Detail = styled.div``;
 
 const Row = styled.div`
   display: flex;
@@ -98,39 +127,69 @@ const Right = styled.div`
   }
 `;
 const Category = styled.span`
-  background-color: #deeb93b0;
+  box-shadow: 0px 1px 3px 0px;
+  color: rgb(34, 101, 78);
   padding: 5px;
   border-radius: 4px;
+  font-weight: bold;
+  font-size: 16px;
+  letter-spacing: 0.05rem;
 `;
 
-// const Topic = styled.div`
-//   margin: 5px 0;
-// `;
+const Front = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: absolute;
+  height: 30vh;
+  width: 100%;
+  border-radius: 5px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  transform: rotateY(180deg);
+`;
 
-const Button = styled.button`
-  display: inline-block;
+const TopicArea = styled.div`
+  padding: 0 16px;
+`;
+const Topic = styled.div`
+  display: inline-flex;
+  flex-grow: 1;
+  padding: 10px;
+  margin: 1%;
+  background-color: #e5ecadca;
+  border-radius: 8px;
+  color: rgb(34, 101, 78);
+  font-size: 16px;
+`;
+
+const Button = styled.div`
+  align-self: center;
   position: relative;
-  border: none;
-  padding: 0.9rem 2rem;
-  margin: 0;
-  background: #bceca9;
-  outline: none;
+  padding: 6%;
+  margin-left: 5vw;
+  background-color: #e5ecadca;
   color: ghostwhite;
+  outline: none;
   letter-spacing: 0.05rem;
-  font-weight: 700;
+  font-weight: bold;
   font-size: 16px;
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
 
   span {
+    display: inline-block;
+    width: 100%;
     position: relative;
     z-index: 10;
+    text-align: center;
     transition: color 0.4s;
   }
 
   &:hover span {
-    color: black;
+    color: rgb(34, 101, 78);
   }
 
   &::before,
@@ -145,7 +204,7 @@ const Button = styled.button`
 
   &::before {
     content: "";
-    background: #80b77b;
+    background: rgb(99, 137, 95);
     width: 120%;
     left: -10%;
     transform: skew(30deg);
@@ -156,6 +215,7 @@ const Button = styled.button`
     transform: translate3d(100%, 0, 0);
   }
 `;
+
 const Community = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
@@ -165,15 +225,19 @@ const Community = () => {
     const renderCommunity = async () => {
       try {
         let user = localStorage.getItem("user");
+        let userId;
         let speaking;
         let learning;
+        let topic;
         if (user) {
           user = JSON.parse(user);
+          userId = user.id;
           speaking = user.speaking;
           learning = user.learning;
-          setMyId(user.id);
+          topic = user.topic;
+          setMyId(userId);
         }
-        const data = { speaking, learning };
+        const data = { userId, speaking, learning, topic };
         const response = await api.queryAllUsers(data);
         const users = response.data;
         setUsers(users);
@@ -195,16 +259,17 @@ const Community = () => {
 
   return (
     <Wrapper>
-      <ToastContainer />
       <UserArea>
         {users.map((user) => (
           <User key={user._id}>
-            <AvatarContainer>
-              <Avatar src={user.avatar} alt="user avatar" />
-              <Online online={user.online} />
-            </AvatarContainer>
-            <UserName>{user.username}</UserName>
-            <Detail>
+            <Back>
+              <AvatarContainer>
+                <AvatarWrapper>
+                  <Avatar src={user.avatar} alt="user avatar" />
+                  <Online online={user.online} />
+                </AvatarWrapper>
+              </AvatarContainer>
+              <UserName>{user.username}</UserName>
               <Row>
                 <Left>
                   <Category>Speaking</Category>
@@ -216,10 +281,6 @@ const Community = () => {
                       language={item.language}
                     />
                   ))}
-                  {/* Level:
-            {user.speaking.map((item) => (
-              <span>{item.level}</span>
-            ))} */}
                 </Right>
               </Row>
               <Row>
@@ -233,52 +294,43 @@ const Community = () => {
                       language={item.language}
                     />
                   ))}
-                  {/* Level:
-            {user.learning.map((item) => (
-              <span>{item.level}</span>
-            ))} */}
                 </Right>
               </Row>
-              {/*
-              
-              <Row>
-                <Left>
-                  <Category> Topic</Category>
-                </Left>
-                <Right>
-                  {user.topic.map((item) => (
-                    <span> {item}</span>
-                  ))}
-                </Right>
-              </Row> */}
-              {/* <Topic>
-              <Category> Topic</Category>
-              {user.topic.map((item) => (
-                <span> {item}</span>
-              ))}
-            </Topic> */}
-            </Detail>
+            </Back>
 
-            <Button
-              onClick={() => {
-                const partnerId = user._id;
-                if (!myId) {
-                  toast.warn(
-                    "Chatting is only available to registered members. Join us now!",
-                    {
-                      position: "top-center",
-                      autoClose: 1500,
-                      onClose: () => {
-                        navigate("/login");
-                      },
-                    }
-                  );
-                }
-                handleStartChat(partnerId);
-              }}
-            >
-              <span>Start Chatting</span>
-            </Button>
+            <Front>
+              <TopicArea>
+                {user.topic.length === 0 ? (
+                  <Topic>🌱Not specified</Topic>
+                ) : (
+                  user.topic.map((item) => <Topic>🌱{item}</Topic>)
+                )}
+              </TopicArea>
+
+              <Button
+                onClick={() => {
+                  const partnerId = user._id;
+                  if (!myId) {
+                    toast.warn(
+                      "Chatting is only available to registered members. Join us now!",
+                      {
+                        position: "top-center",
+                        style: {
+                          top: "100px",
+                        },
+                        autoClose: 1500,
+                        onClose: () => {
+                          navigate("/login");
+                        },
+                      }
+                    );
+                  }
+                  handleStartChat(partnerId);
+                }}
+              >
+                <span>Start Chatting</span>
+              </Button>
+            </Front>
           </User>
         ))}
       </UserArea>

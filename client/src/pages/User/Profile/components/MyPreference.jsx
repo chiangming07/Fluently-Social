@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 import styled from "styled-components/macro";
 
@@ -115,6 +114,9 @@ const MyPreference = (props) => {
 
   const successNotify = (msg) => {
     toast.success(msg, {
+      style: {
+        top: "100px",
+      },
       icon: "🌱",
     });
   };
@@ -145,16 +147,15 @@ const MyPreference = (props) => {
   const handleSubmitClick = async () => {
     const accessToken = localStorage.getItem("accessToken");
     const user = JSON.parse(localStorage.getItem("user"));
-    const email = user.email;
+    const _id = user.id;
     const topic = selectedTopic;
-    const updated = { email, speaking, learning, topic };
-    console.log(updated);
+    const updated = { _id, speaking, learning, topic };
+    console.log("updated", updated);
     try {
       const response = await api.updatePreference(updated, accessToken);
-      console.log(response);
-      const user = response.data.user;
-      localStorage.setItem("user", JSON.stringify(user));
       if (response.status === 200) {
+        const user = response.data.user;
+        localStorage.setItem("user", JSON.stringify(user));
         successNotify("Preference updated!");
       }
     } catch (e) {
@@ -164,7 +165,6 @@ const MyPreference = (props) => {
   };
   return (
     <Wrapper>
-      <ToastContainer />
       <Content>
         <Row>
           <Label>Speaking</Label>

@@ -1,5 +1,7 @@
 import { mongoose, Schema } from "mongoose";
 import { db } from "../database.js";
+import { Cache } from "../utils/cache.js";
+
 import bcrypt from "bcrypt";
 
 import { CustomError } from "../middleware/errorHandler.js";
@@ -150,12 +152,15 @@ const validateUser = async (email, password) => {
   };
 };
 
-const updateUserPreference = async (email, speaking, learning, topic) => {
-  const filter = { email };
+const updateUserPreference = async (_id, speaking, learning, topic) => {
+  const filter = { _id };
   const update = { speaking, learning, topic };
   const updatedUser = await User.findOneAndUpdate(filter, update, {
     new: true,
   });
+
+  await Cache.del(`userTopics:${_id}`);
+  await Cache.sadd(`userTopics:${_id}`, topic);
 
   return {
     user: getUserInfo(updatedUser),

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 import styled from "styled-components/macro";
 import dayjs from "dayjs";
@@ -94,6 +93,9 @@ const Chat = () => {
   const errorNotify = (msg) => {
     toast.error(msg, {
       position: "top-center",
+      style: {
+        top: "100px",
+      },
       autoClose: 1500,
       onClose: () => {
         navigate("/login");
@@ -235,7 +237,6 @@ const Chat = () => {
 
   return (
     <Wrapper>
-      <ToastContainer />
       <Rooms chatroomList={chatroomList}></Rooms>
       {!roomId ? (
         <ChatMask>

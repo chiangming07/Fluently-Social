@@ -120,6 +120,22 @@ const api = {
     );
     return response;
   },
+  async queryAllUsers(data) {
+    const response = await axios.post(`${this.hostname}/community/all`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response;
+  },
+  async getRoomId(data) {
+    const response = await axios.post(`${this.hostname}/chat/room-id`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response;
+  },
 };
 
 export default api;

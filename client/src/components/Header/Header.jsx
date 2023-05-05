@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoggedInAtom } from "../../recoil/atoms";
 
 import { ToastContainer, toast } from "react-toastify";
@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   z-index: 99;
   height: 100px;
   width: 100%;
-  padding: 0 4%;
+  padding: 0 60px;
   background: #63895f;
   box-shadow: 0 1px 10px rgb(184, 223, 173, 0.4);
 `;
@@ -136,6 +136,7 @@ function Header() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isLoggedIn = useRecoilValue(isLoggedInAtom);
+  const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
 
   const [inputValue, setInputValue] = useState("");
   const category = searchParams.get("category");
@@ -144,6 +145,9 @@ function Header() {
   const errorNotify = (msg) => {
     toast.error(msg, {
       position: "top-center",
+      style: {
+        top: "100px",
+      },
       autoClose: 1500,
       onClose: () => {
         navigate("/login");
@@ -154,7 +158,7 @@ function Header() {
   useEffect(() => {
     if (category) setInputValue("");
   }, [category]);
-  console.log(isLoggedIn);
+
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     const renderAvatar = async (accessToken) => {
@@ -162,6 +166,7 @@ function Header() {
         const response = await api.getProfile(accessToken);
         if (response.status === 200) {
           const profileAvatar = response.data.avatar;
+          setIsLoggedIn(true);
           setProfileAvatar(profileAvatar);
         }
       } catch (e) {

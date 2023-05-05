@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -20,7 +19,7 @@ const Name = styled.div`
   background: rgb(99, 137, 95);
   color: white;
   text-align: left;
-  padding-left: 2em;
+  padding-left: 60px;
   line-height: 80px;
   letter-spacing: 5px;
   font-size: 28px;
@@ -38,7 +37,7 @@ const List = styled.div`
   align-items: center;
   width: 100%;
   height: 100.3px;
-  padding-left: 1em;
+  padding-left: 25px;
   background: white;
   border-bottom: 2px solid rgb(99, 137, 95, 0.1);
   cursor: pointer;
@@ -61,7 +60,7 @@ const LastMessage = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  max-width: 150px;
+  max-width: 10vw;
 `;
 
 const ChatroomDetail = styled.div`
@@ -98,8 +97,6 @@ const RoomList = ({ chatroomList }) => {
 };
 
 const Rooms = ({ chatroomList }) => {
-  const navigate = useNavigate();
-
   return (
     <RoomsWrapper>
       <Name>Chatroom</Name>

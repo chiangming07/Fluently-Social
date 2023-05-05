@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 import styled from "styled-components/macro";
 import dayjs from "dayjs";
@@ -175,6 +174,9 @@ const ChatHeader = (props) => {
       toast.update(id, {
         render: "Email sent successfully. Please check your mailbox!",
         type: "success",
+        style: {
+          top: "100px",
+        },
         icon: "🌱",
         isLoading: false,
         autoClose: 5000,
@@ -206,36 +208,32 @@ const ChatHeader = (props) => {
   };
 
   return (
-    <>
-      <ToastContainer />
-
-      <ChatHeaderWrapper>
-        <Partner>
-          <Avatar src={partnerData.avatar}></Avatar>
-          <PartnerName>{partnerData.username}</PartnerName>
-          {/* <PartnerStatus></PartnerStatus> */}
-        </Partner>
-        <Tool>
-          <SearchHistory>
-            <TextInput
-              placeholder="Search"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setCurrentSearch(e.target.value);
-              }}
-              onKeyDown={(e) => searchKeyDown(e)}
-            ></TextInput>
-          </SearchHistory>
-          <Abstract
-            onClick={(e) => {
-              sendAbstract(e);
+    <ChatHeaderWrapper>
+      <Partner>
+        <Avatar src={partnerData.avatar}></Avatar>
+        <PartnerName>{partnerData.username}</PartnerName>
+        {/* <PartnerStatus></PartnerStatus> */}
+      </Partner>
+      <Tool>
+        <SearchHistory>
+          <TextInput
+            placeholder="Search"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentSearch(e.target.value);
             }}
-            icon={robot}
-          />
-        </Tool>
-      </ChatHeaderWrapper>
-    </>
+            onKeyDown={(e) => searchKeyDown(e)}
+          ></TextInput>
+        </SearchHistory>
+        <Abstract
+          onClick={(e) => {
+            sendAbstract(e);
+          }}
+          icon={robot}
+        />
+      </Tool>
+    </ChatHeaderWrapper>
   );
 };
 

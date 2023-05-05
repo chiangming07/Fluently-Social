@@ -1,7 +1,7 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 
 import App from "./App";
 import Home from "./pages/Home/Home";
@@ -10,6 +10,7 @@ import Login from "./pages/User/Login/Login";
 import Profile from "./pages/User/Profile/Profile";
 import { Chat } from "./pages/Chat/Chat";
 import Anonymous from "./pages/Anonymous/Anonymous";
+import Community from "./pages/Community/Community";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -23,6 +24,7 @@ root.render(
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/community" element={<Community />} />
       </Route>
     </Routes>
   </BrowserRouter>

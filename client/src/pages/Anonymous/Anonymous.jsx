@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 import styled from "styled-components/macro";
 
@@ -125,11 +124,18 @@ const Anonymous = () => {
 
   const successNotify = (msg) => {
     toast.success(msg, {
+      style: {
+        top: "100px",
+      },
       icon: "🌱",
     });
   };
   const errorNotify = (msg) => {
-    toast.error(msg);
+    toast.error(msg, {
+      style: {
+        top: "100px",
+      },
+    });
   };
 
   //TODO: 清掉
@@ -171,7 +177,7 @@ const Anonymous = () => {
       successNotify(msg);
     } catch (e) {
       const errMsg = e.response.data.message;
-      errorNotify(errMsg);
+      if (errMsg) errorNotify(errMsg);
     }
   };
 
@@ -186,7 +192,6 @@ const Anonymous = () => {
   };
   return (
     <Wrapper>
-      <ToastContainer />
       <MatchForm disabled={isMatched}>
         <LanguageSelector
           label="I can speak..."

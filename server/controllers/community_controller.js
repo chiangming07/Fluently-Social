@@ -48,7 +48,7 @@ const calculateJaccard = (user, otherUsers) => {
 };
 
 const getAllUsers = async (req, res) => {
-  const { userId, speaking = [], learning = [], topic } = req.body;
+  const { userId, speaking, learning, topic } = req.body;
   let users = await queryAllUsers(speaking, learning);
   if (userId) {
     const user = { userId, topic };

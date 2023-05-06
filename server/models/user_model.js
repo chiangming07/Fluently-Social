@@ -168,12 +168,11 @@ const updateUserPreference = async (_id, speaking, learning, topic) => {
 };
 
 const queryAllUsers = async (speaking, learning) => {
-  const user =
+  const users =
     speaking.length < 1 || learning.length < 1
       ? await User.find(
           {},
           {
-            id: 1,
             username: 1,
             avatar: 1,
             online: 1,
@@ -203,7 +202,6 @@ const queryAllUsers = async (speaking, learning) => {
             ],
           },
           {
-            id: 1,
             username: 1,
             avatar: 1,
             online: 1,
@@ -212,7 +210,25 @@ const queryAllUsers = async (speaking, learning) => {
             topic: 1,
           }
         );
-  return user;
+  return users;
+};
+
+const queryNearbyUsers = async (nearbyUsers) => {
+  const users = await User.find(
+    {
+      _id: { $in: nearbyUsers },
+      loginAt: { $gte: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) },
+    },
+    {
+      username: 1,
+      avatar: 1,
+      online: 1,
+      learning: 1,
+      speaking: 1,
+      topic: 1,
+    }
+  );
+  return users;
 };
 
 const createChatroom = async (roomId, myId, partnerId) => {
@@ -232,5 +248,6 @@ export {
   validateUser,
   updateUserPreference,
   queryAllUsers,
+  queryNearbyUsers,
   createChatroom,
 };

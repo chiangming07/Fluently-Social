@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import styled from "styled-components/macro";
@@ -78,7 +78,7 @@ const TimeMessage = styled.span`
 
 const Chat = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { roomId } = useParams();
 
   const [myId, setMyId] = useState("");
   const [chat, setChat] = useState([]);
@@ -87,8 +87,6 @@ const Chat = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [currentSearch, setCurrentSearch] = useState("");
   const [partnerData, setPartnerData] = useState({});
-
-  const roomId = location.pathname.split("/chat/")[1];
 
   const errorNotify = (msg) => {
     toast.error(msg, {
@@ -190,7 +188,6 @@ const Chat = () => {
     const timestamp = dayjs().format("YYYY/MM/DD HH:mm");
 
     socket.on("text message", (message) => {
-      console.log("後端給我的文字", message);
       message.type = "text";
       if (message.roomId === roomId) {
         setChat((chat) => [
@@ -202,16 +199,13 @@ const Chat = () => {
             timestamp,
           },
         ]);
-        console.log("同一房的 update");
         updateChatroomList(message);
       } else {
-        console.log("不同房的 update");
         updateChatroomList(message);
       }
     });
 
     socket.on("image message", (message) => {
-      console.log("後端給我的圖片", message);
       message.type = "image";
       if (message.roomId === roomId) {
         setChat((chat) => [
@@ -225,7 +219,6 @@ const Chat = () => {
         ]);
         updateChatroomList(message);
       } else {
-        console.log("不同房的 update");
         updateChatroomList(message);
       }
     });

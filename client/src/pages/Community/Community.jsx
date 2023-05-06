@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import styled from "styled-components/macro";
+import notFound from "../NotFound/notFound.png";
+
 import LanguageFlag from "../../components/LanguageFlag/LanguageFlag";
+import TabContainer from "./components/TabContainer";
 
 import api from "../../utils/api";
 
@@ -15,15 +19,23 @@ const Wrapper = styled.div`
     linear-gradient(to bottom, #e9e6e68f 0.5px, transparent 2px);
   overflow: auto;
 `;
+const Title = styled.h2`
+  font-family: "Cabin Sketch", cursive;
+  font-size: 3em;
+  padding-left: 1.5%;
+`;
 
+const Image = styled.img`
+  display: block;
+  width: 30%;
+  margin: 0 auto;
+`;
 const UserArea = styled.div`
   display: flex;
-  /* justify-content: space-evenly; */
   flex-wrap: wrap;
   margin: 0 auto;
   width: 95%;
   max-width: 1900px;
-  margin-top: 150px;
 `;
 
 const User = styled.div`
@@ -40,7 +52,7 @@ const User = styled.div`
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.12);
   padding: 1%;
   transform-style: preserve-3d;
-  transition: transform 300ms;
+  transition: transform 800ms;
   box-shadow: 0px 0px 20px 1px #d5d5d5ee;
   &:hover {
     transform: rotateY(180deg);
@@ -220,25 +232,34 @@ const Community = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [myId, setMyId] = useState("");
+  const [isNearMe, setIsNearMe] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const renderCommunity = async () => {
       try {
-        let user = localStorage.getItem("user");
-        let userId;
-        let speaking;
-        let learning;
-        let topic;
-        if (user) {
-          user = JSON.parse(user);
-          userId = user.id;
-          speaking = user.speaking;
-          learning = user.learning;
-          topic = user.topic;
-          setMyId(userId);
+        const user = localStorage.getItem("user");
+        const { id, speaking, learning, topic } = user ? JSON.parse(user) : {};
+        setMyId(id);
+        const data = user
+          ? { userId: id, speaking, learning, topic }
+          : { speaking: [], learning: [], topic: [] };
+
+        if (isNearMe) {
+          const position = await new Promise((success, error) => {
+            navigator.geolocation.getCurrentPosition(success, error);
+          });
+          if (!position) return;
+          const { latitude, longitude } = position.coords;
+          const nearbyUsers = await api.fetchNearbyUsers({
+            userId: id,
+            latitude,
+            longitude,
+          });
+          setUsers(nearbyUsers.data.nearbyUsersData);
+          return;
         }
-        const data = { userId, speaking, learning, topic };
-        const response = await api.queryAllUsers(data);
+        const response = await api.fetchAllUsers(data);
         const users = response.data;
         setUsers(users);
       } catch (e) {
@@ -248,7 +269,7 @@ const Community = () => {
     };
 
     renderCommunity();
-  }, []);
+  }, [isNearMe]);
 
   const handleStartChat = async (partnerId) => {
     const data = { myId, partnerId };
@@ -259,7 +280,14 @@ const Community = () => {
 
   return (
     <Wrapper>
+      <TabContainer isNearMe={isNearMe} setIsNearMe={setIsNearMe} />
       <UserArea>
+        {users.length === 0 && (
+          <>
+            <Title>No one nearby.</Title>
+            <Image src={notFound} />
+          </>
+        )}
         {users.map((user) => (
           <User key={user._id}>
             <Back>
@@ -276,10 +304,7 @@ const Community = () => {
                 </Left>
                 <Right>
                   {user.speaking.map((item) => (
-                    <LanguageFlag
-                      key={item.language}
-                      language={item.language}
-                    />
+                    <LanguageFlag key={item._id} language={item.language} />
                   ))}
                 </Right>
               </Row>
@@ -289,10 +314,7 @@ const Community = () => {
                 </Left>
                 <Right>
                   {user.learning.map((item) => (
-                    <LanguageFlag
-                      key={item.language}
-                      language={item.language}
-                    />
+                    <LanguageFlag key={item._id} language={item.language} />
                   ))}
                 </Right>
               </Row>
@@ -301,9 +323,9 @@ const Community = () => {
             <Front>
               <TopicArea>
                 {user.topic.length === 0 ? (
-                  <Topic>🌱Not specified</Topic>
+                  <Topic>🌱 Not specified</Topic>
                 ) : (
-                  user.topic.map((item) => <Topic>🌱{item}</Topic>)
+                  user.topic.map((item) => <Topic key={item}>🌱 {item}</Topic>)
                 )}
               </TopicArea>
 

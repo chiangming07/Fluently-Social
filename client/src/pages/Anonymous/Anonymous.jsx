@@ -215,7 +215,7 @@ const Anonymous = () => {
             }}
             disabled={isMatched}
           >
-            Meet New Soul
+            Match
           </Button>
           <Button
             onClick={() => {
@@ -224,7 +224,7 @@ const Anonymous = () => {
             }}
             disabled={isMatched}
           >
-            Clear Conditions
+            Unmatch
           </Button>
         </ButtonArea>
       </MatchForm>

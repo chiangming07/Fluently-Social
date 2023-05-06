@@ -9,6 +9,7 @@ import notFound from "../NotFound/notFound.png";
 
 import LanguageFlag from "../../components/LanguageFlag/LanguageFlag";
 import TabContainer from "./components/TabContainer";
+import Loading from "./components/Loading";
 
 import api from "../../utils/api";
 
@@ -233,7 +234,7 @@ const Community = () => {
   const [users, setUsers] = useState([]);
   const [myId, setMyId] = useState("");
   const [isNearMe, setIsNearMe] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const renderCommunity = async () => {
@@ -246,6 +247,7 @@ const Community = () => {
           : { speaking: [], learning: [], topic: [] };
 
         if (isNearMe) {
+          setIsLoading(true);
           const position = await new Promise((success, error) => {
             navigator.geolocation.getCurrentPosition(success, error);
           });
@@ -257,13 +259,16 @@ const Community = () => {
             longitude,
           });
           setUsers(nearbyUsers.data.nearbyUsersData);
+          setIsLoading(false);
           return;
         }
         const response = await api.fetchAllUsers(data);
         const users = response.data;
         setUsers(users);
+        setIsLoading(false);
       } catch (e) {
         console.log(e.response.data.message);
+        setIsLoading(false);
         return;
       }
     };
@@ -282,79 +287,96 @@ const Community = () => {
     <Wrapper>
       <TabContainer isNearMe={isNearMe} setIsNearMe={setIsNearMe} />
       <UserArea>
-        {users.length === 0 && (
+        {isLoading && <Loading msg={"Updating location"} />}
+        {!isLoading && (
           <>
-            <Title>No one nearby.</Title>
-            <Image src={notFound} />
+            {users.length === 0 && (
+              <>
+                <Title>No one nearby.</Title>
+                <Image src={notFound} />
+              </>
+            )}
+            {users.length > 0 && (
+              <>
+                {users.map((user) => (
+                  <User key={user._id}>
+                    <Back>
+                      <AvatarContainer>
+                        <AvatarWrapper>
+                          <Avatar src={user.avatar} alt="user avatar" />
+                          <Online online={user.online} />
+                        </AvatarWrapper>
+                      </AvatarContainer>
+                      <UserName>{user.username}</UserName>
+                      <Row>
+                        <Left>
+                          <Category>Speaking</Category>
+                        </Left>
+                        <Right>
+                          {user.speaking.map((item) => (
+                            <LanguageFlag
+                              key={item._id}
+                              language={item.language}
+                            />
+                          ))}
+                        </Right>
+                      </Row>
+                      <Row>
+                        <Left>
+                          <Category>Learning</Category>
+                        </Left>
+                        <Right>
+                          {user.learning.map((item) => (
+                            <LanguageFlag
+                              key={item._id}
+                              language={item.language}
+                            />
+                          ))}
+                        </Right>
+                      </Row>
+                    </Back>
+
+                    <Front>
+                      <TopicArea>
+                        {user.topic.length === 0 ? (
+                          <Topic>🌱 Not specified</Topic>
+                        ) : (
+                          user.topic.map((item) => (
+                            <Topic key={item}>🌱 {item}</Topic>
+                          ))
+                        )}
+                      </TopicArea>
+
+                      <Button
+                        onClick={() => {
+                          const partnerId = user._id;
+                          if (!myId) {
+                            toast.warn(
+                              "Chatting is only available to registered members. Join us now!",
+                              {
+                                position: "top-center",
+                                style: {
+                                  top: "100px",
+                                },
+                                autoClose: 1500,
+                                onClose: () => {
+                                  navigate("/login");
+                                },
+                              }
+                            );
+                          }
+                          handleStartChat(partnerId);
+                        }}
+                      >
+                        <span>Start Chatting</span>
+                      </Button>
+                    </Front>
+                  </User>
+                ))}
+              </>
+            )}
           </>
         )}
-        {users.map((user) => (
-          <User key={user._id}>
-            <Back>
-              <AvatarContainer>
-                <AvatarWrapper>
-                  <Avatar src={user.avatar} alt="user avatar" />
-                  <Online online={user.online} />
-                </AvatarWrapper>
-              </AvatarContainer>
-              <UserName>{user.username}</UserName>
-              <Row>
-                <Left>
-                  <Category>Speaking</Category>
-                </Left>
-                <Right>
-                  {user.speaking.map((item) => (
-                    <LanguageFlag key={item._id} language={item.language} />
-                  ))}
-                </Right>
-              </Row>
-              <Row>
-                <Left>
-                  <Category>Learning</Category>
-                </Left>
-                <Right>
-                  {user.learning.map((item) => (
-                    <LanguageFlag key={item._id} language={item.language} />
-                  ))}
-                </Right>
-              </Row>
-            </Back>
-
-            <Front>
-              <TopicArea>
-                {user.topic.length === 0 ? (
-                  <Topic>🌱 Not specified</Topic>
-                ) : (
-                  user.topic.map((item) => <Topic key={item}>🌱 {item}</Topic>)
-                )}
-              </TopicArea>
-
-              <Button
-                onClick={() => {
-                  const partnerId = user._id;
-                  if (!myId) {
-                    toast.warn(
-                      "Chatting is only available to registered members. Join us now!",
-                      {
-                        position: "top-center",
-                        style: {
-                          top: "100px",
-                        },
-                        autoClose: 1500,
-                        onClose: () => {
-                          navigate("/login");
-                        },
-                      }
-                    );
-                  }
-                  handleStartChat(partnerId);
-                }}
-              >
-                <span>Start Chatting</span>
-              </Button>
-            </Front>
-          </User>
-        ))}
       </UserArea>
     </Wrapper>
   );

@@ -17,13 +17,14 @@ root.render(
     <Routes>
       <Route path="/" element={<App />}>
         <Route index element={<Home />} />
-        <Route path="/chat/:uuid" element={<Chat />} />
         <Route path="/chat" element={<Chat />} />
+        <Route path="/chat/:roomId" element={<Chat />} />
         <Route path="/anonymous" element={<Anonymous />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/community" element={<Community />} />
+        <Route path="/community/nearme" element={<Community />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

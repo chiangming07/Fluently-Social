@@ -44,6 +44,14 @@ const api = {
     );
     return response;
   },
+  async getRoomId(data) {
+    const response = await axios.post(`${this.hostname}/chat/room-id`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response;
+  },
   async getChatHistory(roomId, paging) {
     const response = await axios.get(
       `${this.hostname}/chat/history?roomId=${roomId}&paging=${paging}`
@@ -120,7 +128,7 @@ const api = {
     );
     return response;
   },
-  async queryAllUsers(data) {
+  async fetchAllUsers(data) {
     const response = await axios.post(`${this.hostname}/community/all`, data, {
       headers: {
         "Content-Type": "application/json",
@@ -128,12 +136,16 @@ const api = {
     });
     return response;
   },
-  async getRoomId(data) {
-    const response = await axios.post(`${this.hostname}/chat/room-id`, data, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  async fetchNearbyUsers(data) {
+    const response = await axios.post(
+      `${this.hostname}/community/nearme`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response;
   },
 };

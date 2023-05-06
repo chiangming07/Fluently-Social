@@ -17,7 +17,7 @@ const FlagImage = styled.img`
   box-shadow: rgb(216, 216, 216) 0px 0px 3px 2px;
 `;
 const LanguageFlag = ({ language }) => (
-  <FlagImage src={`./flags/${flagMapping[language]}.svg`} alt={language} />
+  <FlagImage src={`/flags/${flagMapping[language]}.svg`} alt={language} />
 );
 
 export default LanguageFlag;

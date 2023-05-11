@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 import styled from "styled-components/macro";
 
@@ -22,7 +23,6 @@ const Leave = styled.div`
   width: 10%;
   height: 4rem;
   margin-left: 1.5rem;
-  /* border: 2px solid #f5eedb; */
   border-radius: 8px;
   font-size: 16px;
   font-weight: bold;
@@ -32,7 +32,6 @@ const Leave = styled.div`
   transition: 0.3s;
   color: white;
   background-color: #528271;
-  /* background-color: transparent; */
   cursor: pointer;
   &:hover {
     color: #071b14;
@@ -110,10 +109,10 @@ const MessageInput = (props) => {
 
   const handleFileChange = async () => {
     const file = fileInputRef.current.files[0];
-
+    if (!file) return;
     try {
       const response = await api.getPresignedURL();
-      const { URL, imageName } = response.data;
+      const { URL } = response.data;
 
       await api.uploadToS3(URL, file);
       const imageURL = URL.split("?")[0];
@@ -125,7 +124,12 @@ const MessageInput = (props) => {
 
       socket.emit("anonymous image message", message);
     } catch (error) {
-      // handle error
+      console.log(error);
+      toast.error(error, {
+        style: {
+          top: "100px",
+        },
+      });
     }
   };
 

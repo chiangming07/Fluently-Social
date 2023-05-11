@@ -148,6 +148,19 @@ const api = {
     );
     return response;
   },
+  async updateAvatar(data, accessToken) {
+    const response = await axios.patch(
+      `${this.hostname}/user/update-avatar`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + accessToken,
+        },
+      }
+    );
+    return response;
+  },
 };
 
 export default api;

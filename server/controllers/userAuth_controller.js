@@ -5,11 +5,7 @@ import bcrypt from "bcrypt";
 import validator from "validator";
 
 import { CustomError } from "../middleware/errorHandler.js";
-import {
-  registerUser,
-  validateUser,
-  updateUserPreference,
-} from "../models/user_model.js";
+import { registerUser, validateUser } from "../models/user_model.js";
 
 const validatePassword = (password) => {
   if (
@@ -108,12 +104,4 @@ const getUserProfile = async (req, res) => {
   });
 };
 
-const updatePreference = async (req, res) => {
-  const { _id, speaking, learning, topic } = req.body;
-  if (!_id || speaking.length < 1 || learning.length < 1 || topic.length < 1)
-    throw CustomError.BadRequestError("All fields are required.");
-  const user = await updateUserPreference(_id, speaking, learning, topic);
-  return res.json(user);
-};
-
-export { signUp, logIn, getUserProfile, updatePreference };
+export { signUp, logIn, getUserProfile };

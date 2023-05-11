@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 import styled from "styled-components/macro";
 
@@ -86,10 +87,10 @@ const MessageInput = (props) => {
 
   const handleFileChange = async () => {
     const file = fileInputRef.current.files[0];
-
+    if (!file) return;
     try {
       const response = await api.getPresignedURL();
-      const { URL, imageName } = response.data;
+      const { URL } = response.data;
 
       await api.uploadToS3(URL, file);
       const imageURL = URL.split("?")[0];
@@ -101,7 +102,12 @@ const MessageInput = (props) => {
 
       socket.emit("image message", message);
     } catch (error) {
-      // handle error
+      console.log(error);
+      toast.error(error, {
+        style: {
+          top: "100px",
+        },
+      });
     }
   };
 

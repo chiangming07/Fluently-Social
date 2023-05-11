@@ -152,7 +152,7 @@ const validateUser = async (email, password) => {
   };
 };
 
-const updateUserPreference = async (_id, speaking, learning, topic) => {
+const updateUserPreference = async (_id, speaking, learning, topic = []) => {
   const filter = { _id };
   const update = { speaking, learning, topic };
   const updatedUser = await User.findOneAndUpdate(filter, update, {
@@ -160,7 +160,9 @@ const updateUserPreference = async (_id, speaking, learning, topic) => {
   });
 
   await Cache.del(`userTopics:${_id}`);
-  await Cache.sadd(`userTopics:${_id}`, topic);
+  if (topic.length > 0) {
+    await Cache.sadd(`userTopics:${_id}`, topic);
+  }
 
   return {
     user: getUserInfo(updatedUser),
@@ -242,6 +244,13 @@ const createChatroom = async (roomId, myId, partnerId) => {
   await User.updateMany({ _id: { $in: [myId, partnerId] } }, update);
 };
 
+const updateUserAvatar = async (_id, avatar) => {
+  const result = await User.updateOne({ _id }, { $set: { avatar } });
+  if (!result.acknowledged)
+    throw CustomError.BadRequestError("Failed to update avatar.");
+  return true;
+};
+
 export {
   User,
   registerUser,
@@ -250,4 +259,5 @@ export {
   queryAllUsers,
   queryNearbyUsers,
   createChatroom,
+  updateUserAvatar,
 };

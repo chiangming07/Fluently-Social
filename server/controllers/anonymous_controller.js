@@ -26,6 +26,7 @@ const addToWaitingList = async (myKey, socketId) => {
 
 const createAnonymousChatRoom = async (socketId, partnerId) => {
   const roomId = uuidv4();
+  // FIXME: hmset = hset;
   await Cache.hmset("anonymousChatRoom", socketId, roomId, partnerId, roomId);
   return roomId;
 };
@@ -89,6 +90,7 @@ const matchPartner = async (req, res) => {
 
     const roomId = await createAnonymousChatRoom(socketId, partnerId);
 
+    // 把 io 包成 function
     const io = getSocketServer();
 
     io.to(socketId).emit("match", roomId);
@@ -100,6 +102,7 @@ const matchPartner = async (req, res) => {
 const clearMatch = async (req, res) => {
   const { socketId, myKey } = JSON.parse(req.cookies.match);
   const result = await Cache.hdel("waitingListMap", socketId);
+  // 檢查 myKey 是不是 number
   const response = await Cache.lrem(`${myKey}`, 0, socketId);
   if (result !== 1 || response !== 1)
     throw CustomError.BadRequestError(

@@ -32,14 +32,6 @@ const chatroomSchema = new Schema({
     },
   },
 
-  // lastMessage: {
-  //   content: {
-  //     type: String,
-  //   },
-  //   time: {
-  //     type: Date,
-  //   },
-  // },
   createdAt: {
     type: Date,
     default: Date.now,

@@ -53,7 +53,7 @@ const User = styled.div`
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.12);
   padding: 1%;
   transform-style: preserve-3d;
-  transition: transform 800ms;
+  transition: transform 800ms ease 0.1s;
   box-shadow: 0px 0px 20px 1px #d5d5d5ee;
   &:hover {
     transform: rotateY(180deg);
@@ -100,6 +100,8 @@ const AvatarWrapper = styled.div`
 const Avatar = styled.img`
   width: 100%;
   border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
 `;
 
 const Online = styled.div`
@@ -234,11 +236,14 @@ const Community = () => {
   const [users, setUsers] = useState([]);
   const [myId, setMyId] = useState("");
   const [isNearMe, setIsNearMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFetchingLocation, setIsFetchingLocation] = useState(false);
 
   useEffect(() => {
     const renderCommunity = async () => {
       try {
+        setIsLoading(true);
+        setIsFetchingLocation(false);
         const user = localStorage.getItem("user");
         const { id, speaking, learning, topic } = user ? JSON.parse(user) : {};
         setMyId(id);
@@ -247,7 +252,7 @@ const Community = () => {
           : { speaking: [], learning: [], topic: [] };
 
         if (isNearMe) {
-          setIsLoading(true);
+          setIsFetchingLocation(true);
           const position = await new Promise((success, error) => {
             navigator.geolocation.getCurrentPosition(success, error);
           });
@@ -287,12 +292,15 @@ const Community = () => {
     <Wrapper>
       <TabContainer isNearMe={isNearMe} setIsNearMe={setIsNearMe} />
       <UserArea>
-        {isLoading && <Loading msg={"Updating location"} />}
+        {isLoading && !isFetchingLocation && <Loading msg={"Loading"} />}
+        {isLoading && isFetchingLocation && (
+          <Loading msg={"Updating location"} />
+        )}
         {!isLoading && (
           <>
             {users.length === 0 && (
               <>
-                <Title>No one nearby.</Title>
+                <Title>Sorry, no other users found.</Title>
                 <Image src={notFound} />
               </>
             )}

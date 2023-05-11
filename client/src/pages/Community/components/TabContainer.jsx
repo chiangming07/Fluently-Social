@@ -33,6 +33,7 @@ const TabButton = styled.button`
 
   &:hover {
     color: #5b9f59ce;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 5px 0 #7cc096;
   }
 `;
 

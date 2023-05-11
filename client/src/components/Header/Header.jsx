@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { isLoggedInAtom } from "../../recoil/atoms";
+import { useRecoilState } from "recoil";
+import { isLoggedInAtom, profileAvatarAtom } from "../../recoil/atoms";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -106,9 +106,9 @@ const ProfileAvatar = styled.img`
   position: relative;
   width: 50px;
   height: 50px;
-  background-size: contain;
-  background-repeat: no-repeat;
   border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
   box-shadow: 0px 0px 3px 2px #d9b99a;
   transition: box-shadow 0.1s ease-in-out;
   &:hover {
@@ -135,12 +135,11 @@ const categories = [
 function Header() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const isLoggedIn = useRecoilValue(isLoggedInAtom);
-  const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInAtom);
+  const [profileAvatar, setProfileAvatar] = useRecoilState(profileAvatarAtom);
 
   const [inputValue, setInputValue] = useState("");
   const category = searchParams.get("category");
-  const [profileAvatar, setProfileAvatar] = useState("");
 
   const errorNotify = (msg) => {
     toast.error(msg, {

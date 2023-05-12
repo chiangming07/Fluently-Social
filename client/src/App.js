@@ -11,6 +11,7 @@ const GlobalStyle = createGlobalStyle`
     /* border: 1px solid black !important; */
     margin: 0;
     padding: 0;
+    color: #071b14;
   },
   body {
     font-family: 'Noto Sans TC', sans-serif;

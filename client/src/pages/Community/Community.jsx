@@ -199,6 +199,7 @@ const Button = styled.div`
     width: 100%;
     position: relative;
     z-index: 10;
+    color: ghostwhite;
     text-align: center;
     transition: color 0.4s;
   }

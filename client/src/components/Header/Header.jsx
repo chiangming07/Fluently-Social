@@ -164,7 +164,8 @@ function Header() {
       try {
         const response = await api.getProfile(accessToken);
         if (response.status === 200) {
-          const profileAvatar = response.data.avatar;
+          const user = localStorage.getItem("user");
+          const profileAvatar = JSON.parse(user).avatar || "";
           setIsLoggedIn(true);
           setProfileAvatar(profileAvatar);
         }

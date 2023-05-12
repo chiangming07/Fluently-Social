@@ -70,7 +70,7 @@ const TopicLabel = styled.label`
 const Topic = ({ selectedTopic, setSelectedTopic }) => {
   const handleCheckboxChange = (topic) => {
     setSelectedTopic((prev) =>
-      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
+      prev?.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
     );
   };
 
@@ -80,7 +80,7 @@ const Topic = ({ selectedTopic, setSelectedTopic }) => {
         <TopicContainer key={topic}>
           <Checkbox
             id={topic}
-            checked={selectedTopic.includes(topic)}
+            checked={selectedTopic?.includes(topic)}
             onChange={() => handleCheckboxChange(topic)}
           />
           <TopicLabel htmlFor={topic}>{topic}</TopicLabel>

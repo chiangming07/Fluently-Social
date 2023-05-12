@@ -83,6 +83,10 @@ const userSchema = new Schema({
 
 const User = mongoose.model("User", userSchema);
 
+const checkEmailExist = async (email) => {
+  const response = await User.findOne({ email });
+  return response;
+};
 const registerUser = async (username, email, password, speaking, learning) => {
   const session = await mongoose.startSession();
 
@@ -93,8 +97,7 @@ const registerUser = async (username, email, password, speaking, learning) => {
       username,
       email,
       password,
-      avatar:
-        "https://image1.gamme.com.tw/news2/2017/52/41/qZqZo6SVk6ecq6Y.jpg",
+      avatar: "",
       speaking,
       learning,
     };
@@ -253,6 +256,7 @@ const updateUserAvatar = async (_id, avatar) => {
 
 export {
   User,
+  checkEmailExist,
   registerUser,
   validateUser,
   updateUserPreference,

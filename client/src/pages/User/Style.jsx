@@ -6,7 +6,12 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 50px);
+  position: relative;
+  height: calc(100vh - 100px);
+  margin-top: 100px;
+  background-size: 50px 50px;
+  background-image: linear-gradient(to right, #e9e6e68f 0.5px, transparent 2px),
+    linear-gradient(to bottom, #e9e6e68f 0.5px, transparent 2px);
 `;
 
 const Form = styled.form`
@@ -16,8 +21,8 @@ const Form = styled.form`
   justify-content: center;
   width: 80%;
   height: 65vh;
-  margin-top: 100px;
   padding: 20px;
+  background-color: white;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 `;
@@ -25,7 +30,8 @@ const Form = styled.form`
 const Title = styled.h1`
   font-size: 2em;
   text-transform: uppercase;
-  letter-spacing: 5px;
+  letter-spacing: 4px;
+  padding: 10px;
   margin-bottom: 1em;
   text-align: center;
   &:hover {
@@ -40,7 +46,6 @@ const Title = styled.h1`
 const Row = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
 `;
 
 const Label = styled.label`
@@ -49,7 +54,7 @@ const Label = styled.label`
 `;
 
 const Input = styled.input`
-  width: 100%;
+  width: 20vw;
   padding: 12px;
   margin: 0.5em 0 1.2em 0;
   border: none;

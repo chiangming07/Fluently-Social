@@ -12,29 +12,24 @@ import {
   Label,
   Input,
   ErrorMessage,
+  Button,
   Redirect,
 } from "../Style";
+
+import loginImg from "./loginImg.png";
 
 import api from "../../../utils/api";
 
 const UserData = styled.div`
   width: 40%;
 `;
-const Button = styled.span`
-  margin: 0 10px;
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
-  background-color: ${({ disabled }) => (disabled ? "#e1e1e1" : "#b0d7a1")};
-  color: ${({ disabled }) => (disabled ? "#9b9b9b" : "#4d4747")};
-  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
-  font-size: 16px;
-  transition: background-color 0.3s ease;
 
-  &:hover {
-    background-color: ${({ disabled }) => (disabled ? "#e1e1e1" : "#628566")};
-    color: ${({ disabled }) => (disabled ? "#9b9b9b" : "white")};
-  }
+const Image = styled.img`
+  position: absolute;
+  bottom: 0;
+  right: 40px;
+  width: 28%;
+  opacity: 0.7;
 `;
 
 const Login = () => {
@@ -48,6 +43,13 @@ const Login = () => {
   const handleError = (e) => {
     if (e.response) {
       setError(e.response.data.message);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.keyCode === 13 && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmitClick();
     }
   };
 
@@ -80,6 +82,7 @@ const Login = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e)}
               />
             </Row>
             <Row>
@@ -88,6 +91,7 @@ const Login = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e)}
               />
             </Row>
           </UserData>
@@ -98,6 +102,7 @@ const Login = () => {
           <Redirect to="/signup">Don't have an account?</Redirect>
         </>
       </Form>
+      <Image src={loginImg} />
     </Wrapper>
   );
 };

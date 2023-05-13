@@ -12,6 +12,8 @@ import {
   Redirect,
 } from "../../Style";
 
+import signupImg from "./signupImg.png";
+
 import api from "../../../../utils/api";
 
 const Wrapper = styled.div`
@@ -27,8 +29,9 @@ const Intro = styled.div`
 `;
 
 const Image = styled.img`
-  width: 80%;
+  width: 60%;
   margin-right: 20px;
+  opacity: 0.7;
 `;
 
 const Info = styled.div`
@@ -45,12 +48,19 @@ const StepOne = (props) => {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    if (data) {
+    if (Object.keys(data).length !== 0) {
       setUsername(data?.username);
       setEmail(data?.email);
       setPassword(data?.password);
     }
   }, []);
+
+  const handleKeyDown = (e) => {
+    if (e.keyCode === 13 && !e.shiftKey) {
+      e.preventDefault();
+      handleNext();
+    }
+  };
 
   const handleNext = async () => {
     handleError("");
@@ -72,7 +82,7 @@ const StepOne = (props) => {
   return (
     <Wrapper>
       <Intro>
-        <Image src="https://media.istockphoto.com/id/1197121742/zh/%E7%85%A7%E7%89%87/%E9%BB%83%E8%89%B2%E7%9A%84%E5%BF%AB%E6%A8%82%E5%B8%8C%E5%B7%B4%E7%8B%97%E7%B4%85%E9%A0%AD%E9%AB%AE%E7%9A%84%E6%97%A5%E6%9C%AC%E7%8B%97%E5%BE%AE%E7%AC%91%E8%82%96%E5%83%8F.jpg?s=612x612&w=0&k=20&c=ewvHfNLFOiqiLgXE5I1x0vpfje-VW-pSei6NgvHHlr4=" />
+        <Image src={signupImg} />
       </Intro>
       <Info>
         <Title>Join Now 🌱</Title>
@@ -85,6 +95,7 @@ const StepOne = (props) => {
             value={username}
             placeholder="Username (2-14 characters)"
             onChange={(e) => setUsername(e.target.value)}
+            onKeyDown={(e) => handleKeyDown(e)}
           />
         </Row>
         <Row>
@@ -96,18 +107,19 @@ const StepOne = (props) => {
             value={email}
             placeholder="Email (e.g., example@example.com)"
             onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e) => handleKeyDown(e)}
           />
         </Row>
         <Row>
           <Label>
             Password <span style={{ color: "red" }}>*</span>
           </Label>
-
           <Input
             type="password"
             value={password}
             placeholder="Password (at least 8 characters)"
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => handleKeyDown(e)}
           />
         </Row>
 

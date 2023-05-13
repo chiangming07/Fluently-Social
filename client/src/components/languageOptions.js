@@ -35,4 +35,21 @@ const languageOptions = [
   { value: "VN", label: "Vietnam" },
 ];
 
-export default languageOptions;
+const getFilteredOptions = (languageOptions, speaking, learning) => {
+  return languageOptions.map((option) => {
+    const isSpeakingLanguage = speaking.some(
+      (item) => item.language === option?.value
+    );
+    const isLearningLanguage = learning.some(
+      (item) => item.language === option?.value
+    );
+    const isDisabled = isSpeakingLanguage || isLearningLanguage;
+
+    return {
+      ...option,
+      disabled: isDisabled,
+    };
+  });
+};
+
+export { languageOptions, getFilteredOptions };

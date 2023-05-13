@@ -5,17 +5,23 @@ import bcrypt from "bcrypt";
 import validator from "validator";
 
 import { CustomError } from "../middleware/errorHandler.js";
-import { registerUser, validateUser } from "../models/user_model.js";
+import {
+  checkEmailExist,
+  registerUser,
+  validateUser,
+} from "../models/user_model.js";
 
 const validatePassword = (password) => {
   if (
     !validator.isStrongPassword(password, {
+      minLowercase: 0,
       minUppercase: 0,
+      minNumbers: 0,
       minSymbols: 0,
     })
   )
     throw CustomError.BadRequestError(
-      "Password must be at least 8 characters long with 1 lowercase and 1 numeric character"
+      "Password must be at least 8 characters."
     );
 };
 
@@ -30,9 +36,10 @@ const generateAccessToken = ({ provider, username, email, avatar }) => {
 };
 
 const signUp = async (req, res) => {
-  let { provider, username, email, password, speaking, learning } = req.body;
+  let { provider, username, email, password, speaking, learning, step } =
+    req.body;
 
-  if (!username || !email || !password || !speaking || !learning)
+  if (!username || !email || !password)
     throw CustomError.BadRequestError("All fields are required.");
   if (!validator.isLength(username, { min: 2, max: 14 }))
     throw CustomError.BadRequestError(
@@ -42,6 +49,16 @@ const signUp = async (req, res) => {
     throw CustomError.BadRequestError("Invalid email format.");
 
   validatePassword(password);
+  const doesEmailExist = await checkEmailExist(email);
+  if (doesEmailExist) throw CustomError.CONFLICT("User email already exists.");
+
+  if (step === "first") return res.json(true);
+
+  if (!speaking || !learning)
+    throw CustomError.BadRequestError(
+      "Both speaking languages and learning languages are mandatory."
+    );
+
   password = await bcrypt.hash(password, +process.env.SALT);
 
   const { _id, avatar, online } = await registerUser(

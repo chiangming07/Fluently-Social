@@ -87,7 +87,14 @@ const Profile = () => {
         const response = await api.getProfile(accessToken);
         if (response.status === 200) {
           const user = JSON.parse(localStorage.getItem("user"));
-          const { avatar, username, email, speaking, learning, topic } = user;
+          const {
+            avatar = "",
+            username,
+            email,
+            speaking,
+            learning,
+            topic = [],
+          } = user;
           setAvatar(avatar);
           setUsername(username);
           setEmail(email);

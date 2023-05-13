@@ -1,56 +1,63 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ErrorMessage, Button, SelectionBlock, Pair } from "../../Style";
+import { useSetRecoilState } from "recoil";
+import { isLoggedInAtom } from "../../../../recoil/atoms";
+
+import styled from "styled-components/macro";
+import { ErrorMessage, Button } from "../../Style";
+
+import LanguageWrapper from "../../LanguageWrapper";
+import {
+  languageOptions,
+  getFilteredOptions,
+} from "../../../../components/languageOptions.js";
 
 import api from "../../../../utils/api";
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`;
+
+const Reminder = styled.h1`
+  margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 2em;
+`;
+
+const SelectionArea = styled.div`
+  display: flex;
+  width: 100%;
+  height: 24vh;
+  margin: 2% 0 2% 16%;
+`;
+const Row = styled.div`
+  width: 100%;
+`;
+
+const Label = styled.div`
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 1.4em;
+  margin-bottom: 8px;
+`;
+
+const ButtonArea = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
 const StepTwo = (props) => {
   const navigate = useNavigate();
-  const {
-    data,
-    setData,
-    handleLastClick,
-    handleNextClick,
-    handleError,
-    error,
-  } = props;
+  const { data, setData, handleBackClick, handleError, error } = props;
+  const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
 
   const [speaking, setSpeaking] = useState([]);
-  const [selectedSpeaking, setSelectedSpeaking] = useState("");
-  const [selectedSpeakingLevel, setSelectedSpeakingLevel] = useState("");
   const [learning, setLearning] = useState([]);
-  const [selectedLearning, setSelectedLearning] = useState("");
-  const [selectedLearningLevel, setSelectedLearningLevel] = useState("");
-
-  const handleAddLanguage = (type) => {
-    let newLanguage, newLevel, newItems;
-
-    if (type === "speaking") {
-      newLanguage = selectedSpeaking;
-      newLevel = selectedSpeakingLevel;
-      newItems = [...speaking, { language: newLanguage, level: newLevel }];
-      setSelectedSpeaking("");
-      setSelectedSpeakingLevel("");
-      setSpeaking(newItems);
-    } else {
-      newLanguage = selectedLearning;
-      newLevel = selectedLearningLevel;
-      newItems = [...learning, { language: newLanguage, level: newLevel }];
-      setSelectedLearning("");
-      setSelectedLearningLevel("");
-      setLearning(newItems);
-    }
-  };
-
-  const handleNext = () => {
-    if (speaking.length < 1 || learning.length < 1) {
-      handleError("Please select at least a pair of language");
-    } else {
-      handleError("");
-      setData({ ...data, speaking, learning });
-      handleNextClick("next-2");
-    }
-  };
 
   const handleSubmitClick = async () => {
     handleError("");
@@ -62,127 +69,63 @@ const StepTwo = (props) => {
       if (response.status === 200) {
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("user", JSON.stringify(user));
-        navigate("/");
+        setIsLoggedIn(true);
+        navigate("/profile");
       }
     } catch (e) {
       handleError(e);
     }
   };
 
+  const filteredOptions = getFilteredOptions(
+    languageOptions,
+    speaking,
+    learning
+  );
+
   return (
-    <>
-      <SelectionBlock>
-        <h1 style={{ background: "#91d37769" }}>
-          Please select at least a pair of language
-        </h1>
-        <div>
-          <h2>What languages do you speak?</h2>
-          <select
-            value={selectedSpeaking}
-            onChange={(e) => setSelectedSpeaking(e.target.value)}
-          >
-            <option value="" disabled>
-              I speak...
-            </option>
-            <option value="zh-TW">Chinese</option>
-            <option value="en-US">English</option>
-            <option value="ES">Spanish</option>
-            <option value="JP">Japanese</option>
-          </select>
-          <select
-            value={selectedSpeakingLevel}
-            onChange={(e) => setSelectedSpeakingLevel(e.target.value)}
-          >
-            <option value="" disabled>
-              My level is...
-            </option>
-            <option value="advanced">Advanced</option>
-            <option value="native">Native</option>
-          </select>
-          <Button
-            onClick={() => {
-              if (!selectedSpeaking || !selectedSpeakingLevel) return;
-              handleAddLanguage("speaking");
-            }}
-            disabled={!selectedSpeaking || !selectedSpeakingLevel}
-          >
-            Add
-          </Button>
-          <Pair>
-            {speaking.map((item) => (
-              <div key={item.language}>
-                <span>{item.language} - </span>
-                <span>{item.level}</span>
-              </div>
-            ))}
-          </Pair>
-        </div>
-        <div>
-          <h2>What languages do you want to learn?</h2>
-          <select
-            value={selectedLearning}
-            onChange={(e) => setSelectedLearning(e.target.value)}
-          >
-            <option value="" disabled>
-              I wanna learn...
-            </option>
-            <option value="zh-TW">Chinese</option>
-            <option value="en-US">English</option>
-            <option value="ES">Spanish</option>
-            <option value="JP">Japanese</option>
-          </select>
-          <select
-            value={selectedLearningLevel}
-            onChange={(e) => setSelectedLearningLevel(e.target.value)}
-          >
-            <option value="" disabled>
-              My level is...
-            </option>
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
-          </select>
-          <Button
-            onClick={() => {
-              if (!selectedLearning || !selectedLearningLevel) return;
-              handleAddLanguage("learning");
-            }}
-            disabled={!selectedLearning || !selectedLearningLevel}
-          >
-            Add
-          </Button>
-          <Pair>
-            {learning.map((item) => (
-              <div key={item.language}>
-                <span>{item.language} - </span>
-                <span>{item.level}</span>
-              </div>
-            ))}
-          </Pair>
-        </div>
-        <ErrorMessage>{error}</ErrorMessage>
-        <>
-          <Button value="last" onClick={handleLastClick}>
-            Last
-          </Button>
-          {/* <Button
-            onClick={handleNext}
-            disabled={speaking.length < 1 || learning.length < 1}
-          >
-            Next
-          </Button> */}
-          <Button
-            onClick={() => {
-              if (speaking.length < 1 || learning.length < 1) return;
-              handleSubmitClick();
-            }}
-            disabled={speaking.length < 1 || learning.length < 1}
-          >
-            Get started!
-          </Button>
-        </>
-      </SelectionBlock>
-    </>
+    <Wrapper>
+      <Reminder>Please select at least a pair of language 🌱</Reminder>
+      <SelectionArea>
+        <Row>
+          <Label>
+            Speaking <span style={{ color: "red" }}>*</span>
+          </Label>
+          <LanguageWrapper
+            type={"speaking"}
+            state={speaking}
+            setState={setSpeaking}
+            filteredOptions={filteredOptions}
+          />
+        </Row>
+        <Row>
+          <Label>
+            Learning <span style={{ color: "red" }}>*</span>
+          </Label>
+          <LanguageWrapper
+            type={"learning"}
+            state={learning}
+            setState={setLearning}
+            filteredOptions={filteredOptions}
+          />
+        </Row>
+      </SelectionArea>
+      <ErrorMessage>{error}</ErrorMessage>
+      <ButtonArea>
+        <Button value="back" onClick={handleBackClick}>
+          Back
+        </Button>
+        <Button
+          onClick={() => {
+            if (speaking.length < 1 || learning.length < 1) return;
+            handleSubmitClick();
+          }}
+          disabled={speaking.length < 1 || learning.length < 1}
+        >
+          Get started!
+        </Button>
+      </ButtonArea>
+    </Wrapper>
   );
 };
 

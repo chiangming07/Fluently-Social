@@ -1,5 +1,4 @@
 const languageOptions = [
-  { value: "", label: "Language", disabled: true },
   { value: "ar-SA", label: "Arabic - Saudi Arabia" },
   { value: "BE", label: "Belgium" },
   { value: "zh-TW", label: "Chinese(Traditional)" },
@@ -44,7 +43,6 @@ const getFilteredOptions = (languageOptions, speaking, learning) => {
       (item) => item.language === option?.value
     );
     const isDisabled = isSpeakingLanguage || isLearningLanguage;
-
     return {
       ...option,
       disabled: isDisabled,
@@ -52,4 +50,40 @@ const getFilteredOptions = (languageOptions, speaking, learning) => {
   });
 };
 
-export { languageOptions, getFilteredOptions };
+const languageMap = {
+  "ar-SA": "001",
+  BE: "002",
+  "zh-TW": "003",
+  "zh-CN": "004",
+  "zh-HK": "005",
+  "zh-MO": "006",
+  CZ: "007",
+  DK: "008",
+  "en-US": "009",
+  "en-GB": "010",
+  FI: "011",
+  "fr-FR": "012",
+  "de-DE": "013",
+  GR: "014",
+  IS: "015",
+  IN: "016",
+  ID: "017",
+  IL: "018",
+  "it-IT": "019",
+  JP: "020",
+  KR: "021",
+  MY: "022",
+  PL: "023",
+  "pt-BR": "024",
+  "pt-PT": "025",
+  RU: "026",
+  ES: "027",
+  SE: "028",
+  TH: "029",
+  NL: "030",
+  TR: "031",
+  UA: "032",
+  VN: "033",
+};
+
+export { languageOptions, getFilteredOptions, languageMap };

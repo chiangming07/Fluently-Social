@@ -95,6 +95,9 @@ const LanguageWrapper = (props) => {
           value={selectedLanguage}
           onChange={(e) => setSelectedLanguage(e.target.value)}
         >
+          <option value="" disabled>
+            Language
+          </option>
           {filteredOptions.map((option) => {
             return (
               <option

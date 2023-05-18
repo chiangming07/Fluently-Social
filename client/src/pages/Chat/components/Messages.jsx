@@ -114,7 +114,7 @@ const MessagesComponent = (props) => {
 
     if (hasMore && earlyMessagesRef.current) {
       const messageContainer = earlyMessagesRef.current;
-      const threshold = 50; // 預留 50 像素的空間觸發下一頁載入
+      const threshold = 50;
       const containerHeight = messageContainer.clientHeight;
       const scrollTop = messageContainer.scrollTop;
       const scrollHeight = messageContainer.scrollHeight;

@@ -4,6 +4,8 @@ import { Cache } from "./utils/cache.js";
 import { Message } from "./models/message_model.js";
 import { updateLastMessage } from "./models/chatroom_model.js";
 
+import { consumeFromQueue, publishToExchange } from "./utils/pubsub.js";
+
 const io = new Server({
   cors: {
     origin: "*",
@@ -12,6 +14,7 @@ const io = new Server({
 
 const createSocketServer = (server) => {
   io.attach(server);
+  consumeFromQueue();
   io.on("connection", (socket) => {
     console.log("a user connected", socket.id);
     socket.on("join-room", (currentRoomId) => {
@@ -25,10 +28,10 @@ const createSocketServer = (server) => {
     });
 
     // 一對一聊天室
-    socket.on("text message", (message) => {
+    socket.on("text message", async (message) => {
       const { roomId, senderId, content } = message;
-      console.log("message: " + content);
-      io.to(roomId).emit("text message", message);
+      message.type = "text message";
+      await publishToExchange("fanout_exchange", message);
       try {
         const message = new Message({
           senderId,
@@ -39,17 +42,16 @@ const createSocketServer = (server) => {
           roomId,
         });
         message.save();
-        console.log("message.content", message.content);
-        console.log("Message saved successfully");
         updateLastMessage(roomId, message.content);
       } catch (error) {
         console.error(error);
       }
     });
 
-    socket.on("image message", (message) => {
+    socket.on("image message", async (message) => {
       const { roomId, senderId, content } = message;
-      io.to(roomId).emit("image message", message);
+      message.type = "image message";
+      await publishToExchange("fanout_exchange", message);
       try {
         const message = new Message({
           senderId,
@@ -60,7 +62,6 @@ const createSocketServer = (server) => {
           roomId,
         });
         message.save();
-        console.log("Message saved successfully");
         updateLastMessage(roomId, message.content);
       } catch (error) {
         console.error(error);
@@ -68,8 +69,7 @@ const createSocketServer = (server) => {
     });
 
     // 匿名聊天
-    socket.on("anonymous", (msg) => {
-      console.log(msg);
+    socket.on("anonymous", () => {
       socket.emit("socketId", socket.id);
     });
 
@@ -77,21 +77,21 @@ const createSocketServer = (server) => {
       socket.join(roomId);
     });
 
-    socket.on("anonymous text message", (msg) => {
-      const { roomId } = msg;
-      io.to(roomId).emit("anonymous text message", msg);
+    socket.on("anonymous text message", async (message) => {
+      message.type = "anonymous text message";
+      await publishToExchange("fanout_exchange", message);
     });
 
-    socket.on("anonymous image message", (msg) => {
-      const { roomId } = msg;
-      io.to(roomId).emit("anonymous image message", msg);
+    socket.on("anonymous image message", async (message) => {
+      message.type = "anonymous image message";
+      await publishToExchange("fanout_exchange", message);
     });
 
-    socket.on("leave anonymous chatroom", async (msg) => {
-      const { roomId, socketId } = msg;
-      console.log(msg);
+    socket.on("leave anonymous chatroom", async (message) => {
+      const { socketId } = message;
       await Cache.hdel("anonymousChatRoom", socketId);
-      io.to(roomId).emit("broadcast message", msg);
+      message.type = "broadcast message";
+      await publishToExchange("fanout_exchange", message);
     });
 
     socket.on("disconnect", () => {

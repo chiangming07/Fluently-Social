@@ -13,18 +13,3 @@ const getHistory = async (req, res) => {
 };
 
 export { getHistory };
-
-// const roomId = "49b35ea0-a26d-4e38-914b-aa508479fd1c";
-// const messageNum = 20;
-// const paging = 2;
-// const messages = await Message.find({ roomId })
-//   .sort({ createdAt: 1 })
-//   .skip(paging > 0 ? (paging - 1) * messageNum : 0)
-//   .limit(messageNum);
-// console.log(messages);
-// messages.map((message) => {
-//   let timestamp = message.createdAt;
-//   const date = dayjs(timestamp);
-//   const time = date.format("YYYY/MM/DD HH:mm:ss");
-//   console.log(time);
-// });

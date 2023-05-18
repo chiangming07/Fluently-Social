@@ -162,11 +162,6 @@ const updateUserPreference = async (_id, speaking, learning, topic = []) => {
     new: true,
   });
 
-  await Cache.del(`userTopics:${_id}`);
-  if (topic.length > 0) {
-    await Cache.sadd(`userTopics:${_id}`, topic);
-  }
-
   return {
     user: getUserInfo(updatedUser),
   };

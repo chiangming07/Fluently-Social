@@ -4,13 +4,6 @@ import styled from "styled-components/macro";
 
 import dayjs from "dayjs";
 
-const Avatar = styled.img`
-  width: ${(props) => (props.chat ? "45px" : "50px")};
-  height: ${(props) => (props.chat ? "45px" : "50px")};
-  margin: ${(props) => (props.chat ? "0 7px" : "0 20px")};
-  border-radius: 50%;
-`;
-
 const TimeMessage = styled.span`
   font-size: 12px;
   color: #999;
@@ -86,9 +79,7 @@ const BroadCastMessage = styled(TextMessage)`
 const MessagesComponent = (props) => {
   const { roomId, myId, socket } = props;
   const messagesEndRef = useRef(null);
-
   const [chat, setChat] = useState([]);
-  const [partnerData, setPartnerData] = useState({});
 
   // 向下滾動
   const scrollToBottom = () => {
@@ -101,7 +92,6 @@ const MessagesComponent = (props) => {
 
   // socket
   useEffect(() => {
-    // socket.emit("join-room", roomId);
     const timestamp = dayjs().format("YYYY/MM/DD HH:mm");
     socket.on("anonymous text message", (message) => {
       setChat((chat) => [
@@ -145,10 +135,10 @@ const MessagesComponent = (props) => {
   return (
     <Messages>
       <BroadCastMessage>Match Successfully🌱</BroadCastMessage>
-      {chat.map((msg) => {
+      {chat.map((msg, index) => {
         const isSelf = msg.senderId === myId;
         return (
-          <div key={msg.index}>
+          <div key={index}>
             {isSelf ? (
               <RightMessage self>
                 <RightContent>

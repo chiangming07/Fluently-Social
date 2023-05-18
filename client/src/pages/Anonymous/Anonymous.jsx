@@ -9,6 +9,11 @@ import { socket } from "../Chat/Chat";
 import MessagesComponent from "./components/Messages";
 import MessageInput from "./components/MessageInput";
 import LanguageSelector from "./components/LanguageSelector";
+import {
+  languageOptions,
+  getFilteredOptions,
+  languageMap,
+} from "../../components/languageOptions.js";
 import Canvas from "./components/Canvas";
 
 import api from "../../utils/api";
@@ -28,22 +33,8 @@ const MatchForm = styled.form`
   width: 25%;
   height: 100%;
   padding-top: 15%;
-  /* border: 1px solid #ccc; */
   border-radius: 4px;
   position: relative;
-  /* &:after {
-    content: "";
-    display: ${({ disabled }) => (disabled ? "block" : "none")};
-    cursor: ${({ disabled }) =>
-    disabled ? "not-allowed" : "pointer"}; !important;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 5;
-    background-color: rgba(197, 232, 198, 0.153);
-  } */
 `;
 
 const ChatArea = styled.div`
@@ -54,23 +45,6 @@ const ChatArea = styled.div`
   background: white;
 `;
 
-// const Match = styled.form`
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-//   align-items: center;
-//   width: 400px;
-//   padding: 20px;
-//   border: 1px solid #ccc;
-//   border-radius: 5px;
-// `;
-// const RadioLabel = styled.label`
-//   margin-right: 10px;
-// `;
-
-// const RadioInput = styled.input`
-//   margin-right: 5px;
-// `;
 const ButtonArea = styled.div`
   position: relative;
   display: flex;
@@ -81,6 +55,7 @@ const ButtonArea = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
+
 const Button = styled.div`
   position: relative;
   z-index: 1;
@@ -104,10 +79,11 @@ const Button = styled.div`
 `;
 
 const Anonymous = () => {
-  const [speaking, setSpeaking] = useState("");
-  const [learning, setLearning] = useState("");
+  const [speaking, setSpeaking] = useState([]);
+  const [learning, setLearning] = useState([]);
   const [socketId, setSocketId] = useState("");
   const [isMatched, setIsMatched] = useState(false);
+  const [isMatching, setIsMatching] = useState(false);
   const [roomId, setRoomId] = useState("");
 
   useEffect(() => {
@@ -121,6 +97,8 @@ const Anonymous = () => {
       socket.emit("anonymous join room", roomId);
     });
   }, []);
+
+  useEffect(() => {});
 
   const successNotify = (msg) => {
     toast.success(msg, {
@@ -156,24 +134,24 @@ const Anonymous = () => {
   //   }, []);
 
   const handleMatch = async () => {
-    const langMap = {
-      "zh-TW": 1,
-      "en-US": 2,
-      JP: 3,
-      ES: 4,
-    };
+    if (!speaking[0] || !learning[0]) {
+      errorNotify(
+        "Please select the language you speak and you want to practice."
+      );
+      return;
+    }
     const data = {
       socketId,
-      speaking: langMap[speaking],
-      learning: langMap[learning],
+      speaking: languageMap[speaking[0].language],
+      learning: languageMap[learning[0].language],
     };
     try {
-      console.log(data);
       const response = await api.matchPartner(data);
       if (response.data.roomId) {
         return;
       }
       const msg = response.data.msg;
+      setIsMatching(true);
       successNotify(msg);
     } catch (e) {
       const errMsg = e.response.data.message;
@@ -182,30 +160,45 @@ const Anonymous = () => {
   };
 
   const handleClear = async () => {
+    if (!speaking[0] || !learning[0]) {
+      errorNotify("You are not in the waiting list. Please try again later.");
+      return;
+    }
     try {
       const response = await api.clearMatch();
-      if (response.status === 200)
+      if (response.status === 200) {
+        setSpeaking([{ language: "" }]);
+        setLearning([{ language: "" }]);
+        setIsMatching(false);
         successNotify("Successfully cleared the matching data");
+      }
     } catch (e) {
       errorNotify("You are not in the waiting list. Please try again later.");
     }
   };
+
+  const filteredOptions = getFilteredOptions(
+    languageOptions,
+    speaking,
+    learning
+  );
+
   return (
     <Wrapper>
       <MatchForm disabled={isMatched}>
         <LanguageSelector
           label="I can speak..."
-          name="teaching"
-          id="speaking"
-          onChange={(e) => setSpeaking(e.target.value)}
-          disabled={isMatched}
+          language={speaking}
+          setLanguage={setSpeaking}
+          disabled={isMatching}
+          filteredOptions={filteredOptions}
         />
         <LanguageSelector
           label="I want to practice..."
-          name="learning"
-          id="learning"
-          onChange={(e) => setLearning(e.target.value)}
-          disabled={isMatched}
+          language={learning}
+          setLanguage={setLearning}
+          disabled={isMatching}
+          filteredOptions={filteredOptions}
         />
         <ButtonArea>
           <Button
@@ -229,7 +222,6 @@ const Anonymous = () => {
         </ButtonArea>
       </MatchForm>
       {isMatched === false ? (
-        // <Loading></Loading>
         <Canvas></Canvas>
       ) : (
         <ChatArea>
@@ -238,23 +230,11 @@ const Anonymous = () => {
             roomId={roomId}
             myId={socketId}
             setIsMatched={setIsMatched}
+            setIsMatching={setIsMatching}
           />
         </ChatArea>
       )}
     </Wrapper>
-
-    //     <RadioWrapper>
-    //       <input type="radio" value="native" />
-    //       <span>native</span>
-    //       <input type="radio" value="nonnative" />
-    //       <span>non-native</span>
-    //     </RadioWrapper>
-    //     <RadioWrapper>
-    //       <input type="radio" value="native" />
-    //       <span>native</span>
-    //       <input type="radio" value="nonnative" />
-    //       <span>non-native</span>
-    //     </RadioWrapper>
   );
 };
 

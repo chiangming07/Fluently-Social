@@ -20,38 +20,32 @@ const Select = styled.select`
   font-size: 16px;
   outline: 1px solid #80b77b;
   text-align: center;
+  background-color: ${({ disabled }) => (disabled ? "#e0e9e9" : "")};
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
 `;
 
-const LANGUAGES = [
-  { value: "zh-TW", label: "Chinese" },
-  { value: "en-US", label: "English" },
-  { value: "JP", label: "Japanese" },
-  { value: "ES", label: "Spanish" },
-  // 添加更多支援的語言
-];
-
 function LanguageSelector(props) {
-  const { label, name, id, onChange, disabled } = props;
-
+  const { label, disabled, language, setLanguage, filteredOptions } = props;
   return (
     <Row>
       <Label>{label}</Label>
       <Select
-        defaultValue=""
-        id={id}
-        name={name}
-        onChange={onChange}
         disabled={disabled}
+        value={language[0]?.language}
+        onChange={(e) => setLanguage([{ language: e.target.value }])}
       >
-        <option value="" disabled>
-          Please Select a language
-        </option>
-        {LANGUAGES.map((language) => (
-          <option key={language.value} value={language.value}>
-            {language.label}
-          </option>
-        ))}
+        <option value="">Language</option>
+        {filteredOptions.map((option) => {
+          return (
+            <option
+              key={option?.value}
+              value={option?.value}
+              disabled={option?.disabled}
+            >
+              {option.label}
+            </option>
+          );
+        })}
       </Select>
     </Row>
   );

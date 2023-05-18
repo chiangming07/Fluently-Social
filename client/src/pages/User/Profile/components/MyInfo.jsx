@@ -48,6 +48,7 @@ const Avatar = styled.img`
   margin-right: 48px;
   border-radius: 50%;
   box-shadow: 0px 0px 10px 3px #d9b99a;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
 `;
 

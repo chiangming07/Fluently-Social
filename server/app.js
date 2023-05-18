@@ -11,7 +11,7 @@ const app = express();
 
 const port = process.env.PORT || 8080;
 
-// Socket Initialization
+// WebSocket Initialization
 import { createServer } from "http";
 import { createSocketServer } from "./socket.js";
 const server = createServer(app);
@@ -21,7 +21,7 @@ createSocketServer(server);
 // Cookie settings
 import cookieParser from "cookie-parser";
 
-// Middlewares
+// Middleware
 app.use(express.static("./public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

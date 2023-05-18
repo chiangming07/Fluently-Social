@@ -103,7 +103,7 @@ const TextButton = styled(Send)`
 `;
 
 const MessageInput = (props) => {
-  const { roomId, myId, setIsMatched } = props;
+  const { roomId, myId, setIsMatched, setIsMatching } = props;
   const fileInputRef = useRef(null);
   const [msg, setMsg] = useState("");
 
@@ -160,6 +160,7 @@ const MessageInput = (props) => {
     };
     socket.emit("leave anonymous chatroom", message);
     setIsMatched(false);
+    setIsMatching(false);
   };
 
   return (

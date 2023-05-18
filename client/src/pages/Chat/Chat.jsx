@@ -67,6 +67,8 @@ const Avatar = styled.img`
   height: ${(props) => (props.chat ? "45px" : "50px")};
   margin: ${(props) => (props.chat ? "0 7px" : "0 20px")};
   border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
 `;
 
 const TimeMessage = styled.span`
@@ -116,6 +118,18 @@ const Chat = () => {
           let user = JSON.parse(localStorage.getItem("user"));
           setMyId(user.id);
           const response = await api.getChatroomList(user.id, accessToken);
+          response.data.forEach((room) => {
+            const convertedTime = new Date(room.lastMessage.time);
+            convertedTime.setHours(convertedTime.getHours() + 8);
+            const year = convertedTime.getFullYear();
+            const month = ("0" + (convertedTime.getMonth() + 1)).slice(-2);
+            const day = ("0" + convertedTime.getDate()).slice(-2);
+            const hour = ("0" + convertedTime.getHours()).slice(-2);
+            const minute = ("0" + convertedTime.getMinutes()).slice(-2);
+            const formattedDate = `${year}/${month}/${day} ${hour}:${minute}`;
+            room.lastMessage.time = formattedDate;
+          });
+
           setChatroomList(response.data);
           socket.emit("join-room-list", response.data);
           // TODO: 一次 query 出來會不會比較好？
@@ -168,7 +182,7 @@ const Chat = () => {
         updatedList.sort((b, a) => {
           return new Date(a.lastMessage.time) - new Date(b.lastMessage.time);
         });
-        console.log(updatedList);
+
         setChatroomList(updatedList);
       }
       //TODO: 再去資料庫 fetch avatar 等資料

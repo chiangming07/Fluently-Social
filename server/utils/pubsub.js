@@ -6,7 +6,9 @@ import { getSocketServer } from "../socket.js";
 
 const consumeFromQueue = async () => {
   try {
-    const connection = await amqp.connect(process.env.AMQP_URL);
+    const connection = await amqp.connect(
+      `amqp://${process.env.AMQP_USERNAME}:${process.env.AMQP_PASSWORD}@${process.env.AMQP_HOST}:${process.env.AMQP_PORT}`
+    );
     const channel = await connection.createChannel();
 
     const exchange = "fanout_exchange";
@@ -46,7 +48,9 @@ const consumeFromQueue = async () => {
 
 const publishToExchange = async (exchange, message) => {
   try {
-    const connection = await amqp.connect("amqp://localhost:5672");
+    const connection = await amqp.connect(
+      `amqp://${process.env.AMQP_USERNAME}:${process.env.AMQP_PASSWORD}@${process.env.AMQP_HOST}:${process.env.AMQP_PORT}`
+    );
     const channel = await connection.createChannel();
 
     await channel.assertExchange(exchange, "fanout", { durable: false });

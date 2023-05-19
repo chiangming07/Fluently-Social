@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import dayjs from "dayjs";
 
-import { Chatroom } from "../models/chatroom_model.js";
+import Chatroom from "../models/schemas/chatroom_schema.js";
 import { createChatroom } from "../models/user_model.js";
 import { queryChatroomList } from "../models/chatroom_model.js";
 import { generateUploadURL } from "../utils/s3.js";
@@ -62,8 +62,8 @@ const getChatroomList = async (req, res) => {
 };
 
 const getUploadURL = async (req, res) => {
-  const { URL, imageName } = await generateUploadURL();
-  res.json({ URL, imageName });
+  const { URL } = await generateUploadURL();
+  res.json({ URL });
 };
 
 export { getRoomId, getChatroomList, getUploadURL };

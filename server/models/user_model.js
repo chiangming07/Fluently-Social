@@ -1,92 +1,15 @@
-import { mongoose, Schema } from "mongoose";
-import { db } from "../database.js";
-import { Cache } from "../utils/cache.js";
+import { mongoose } from "mongoose";
+import User from "./schemas/user_schema.js";
 
 import bcrypt from "bcrypt";
 
 import { CustomError } from "../middleware/errorHandler.js";
 
-const userSchema = new Schema({
-  provider: {
-    type: String,
-    required: true,
-  },
-  username: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  age: {
-    type: String,
-  },
-  gender: {
-    type: String,
-    enum: ["male", "female", "custom"],
-  },
-  speaking: [
-    {
-      language: {
-        type: String,
-        required: true,
-      },
-      level: {
-        type: String,
-        enum: ["beginner", "intermediate", "advanced", "native"],
-        required: true,
-      },
-    },
-  ],
-  learning: [
-    {
-      language: {
-        type: String,
-        required: true,
-      },
-      level: {
-        type: String,
-        enum: ["beginner", "intermediate", "advanced"],
-        required: true,
-      },
-    },
-  ],
-  topic: [{ type: String }],
-  avatar: { type: String },
-  online: { type: Boolean, default: true },
-  chatroom: [
-    {
-      roomId: {
-        type: String,
-      },
-      lastRead: {
-        type: Date,
-        default: Date.now,
-      },
-    },
-  ],
-  loginAt: {
-    type: Date,
-    default: Date.now,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-const User = mongoose.model("User", userSchema);
-
 const checkEmailExist = async (email) => {
   const response = await User.findOne({ email });
   return response;
 };
+
 const registerUser = async (username, email, password, speaking, learning) => {
   const session = await mongoose.startSession();
 
@@ -249,8 +172,15 @@ const updateUserAvatar = async (_id, avatar) => {
   return true;
 };
 
+const queryUserNameAndEmail = async (userId) => {
+  const user = await User.findOne(
+    { _id: userId },
+    { _id: 0, username: 1, email: 1 }
+  );
+  return user;
+};
+
 export {
-  User,
   checkEmailExist,
   registerUser,
   validateUser,
@@ -259,4 +189,5 @@ export {
   queryNearbyUsers,
   createChatroom,
   updateUserAvatar,
+  queryUserNameAndEmail,
 };

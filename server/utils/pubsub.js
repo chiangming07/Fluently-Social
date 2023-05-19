@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import amqp from "amqplib";
-import { getSocketServer } from "../socket.js";
+import { emitToRoom } from "../socket.js";
 
 const consumeFromQueue = async () => {
   try {
@@ -27,14 +27,13 @@ const consumeFromQueue = async () => {
         if (msg) {
           const data = msg.content.toString();
           const parsedMessage = JSON.parse(data);
-          const io = getSocketServer();
           if (parsedMessage.type === "match") {
             const { type, socketId, partnerId, roomId } = parsedMessage;
-            io.to(socketId).emit(type, roomId);
-            io.to(partnerId).emit(type, roomId);
+            emitToRoom(socketId, type, roomId);
+            emitToRoom(partnerId, type, roomId);
           } else {
             const { type, roomId } = parsedMessage;
-            io.to(roomId).emit(type, parsedMessage);
+            emitToRoom(roomId, type, parsedMessage);
           }
           channel.ack(msg);
         }

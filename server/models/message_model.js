@@ -1,57 +1,49 @@
-import { mongoose, Schema } from "mongoose";
-import { db } from "../database.js";
+import dayjs from "dayjs";
 
-const messageSchema = new Schema({
-  senderId: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  content: {
-    type: {
-      type: String,
-      enum: ["text", "image"],
-      required: true,
+import Message from "./schemas/message_schema.js";
+
+const saveMessage = async (senderId, content, roomId, type) => {
+  const message = new Message({
+    senderId,
+    content: {
+      type,
+      data: content,
     },
-    data: {
-      type: String,
-      required: true,
-    },
-  },
-  roomId: {
-    type: String,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+    roomId,
+  });
+  await message.save();
+};
 
-const Message = mongoose.model("Message", messageSchema);
-
-const getMessages = async (roomId, senderId, date) => {
+const getMessages = async (roomId) => {
+  const today = dayjs().startOf("day");
   const messages = await Message.aggregate([
     {
       $match: {
         roomId,
         "content.type": "text",
-        createdAt: { $gte: new Date(date) },
+        createdAt: { $gte: today.toDate() },
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "senderId",
+        foreignField: "_id",
+        as: "user",
       },
     },
     {
       $project: {
-        content: "$content.data",
-        senderId: {
-          $substr: [{ $toString: "$senderId" }, 10, -1],
+        username: {
+          $arrayElemAt: ["$user.username", 0],
         },
+        content: "$content.data",
         _id: 0,
       },
     },
   ]);
-  // TODO: 把 senderId 關聯到 username
   const messageArr = messages.map(
-    (message) => `${message.senderId}: ${message.content}`
+    (message) => `${message.username}: ${message.content}`
   );
 
   return messageArr.join("\n");
@@ -88,4 +80,4 @@ const queryHistory = async (roomId, keyword) => {
   return searchResult;
 };
 
-export { Message, getMessages, queryHistory };
+export { saveMessage, getMessages, queryHistory };

@@ -11,6 +11,10 @@ const app = express();
 
 const port = process.env.PORT || 8080;
 
+// DB Initialization
+import db from "./utils/database.js";
+db();
+
 // WebSocket Initialization
 import { createServer } from "http";
 import { createSocketServer } from "./socket.js";

@@ -96,7 +96,7 @@ const nativeLogIn = async (email, password) => {
 
 const logIn = async (req, res) => {
   const { email, password } = req.body;
-  // TODO: 如果有提供不同的登入管道，要在這邊先判斷 provider
+  // If multiple login channels are available, the provider needs to be checked here first.
   const user = await nativeLogIn(email, password);
   const payload = {
     provider: user.provider,

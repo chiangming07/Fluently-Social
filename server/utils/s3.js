@@ -24,5 +24,5 @@ export async function generateUploadURL() {
   const command = new PutObjectCommand(params);
   const URL = await getSignedUrl(s3, command, { expiresIn: 60 });
 
-  return { URL, imageName };
+  return { URL };
 }

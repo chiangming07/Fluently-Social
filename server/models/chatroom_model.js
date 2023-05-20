@@ -1,44 +1,5 @@
-import { mongoose, Schema } from "mongoose";
-import { db } from "../database.js";
-
-const chatroomSchema = new Schema({
-  roomId: {
-    type: String,
-    required: true,
-  },
-  members: [
-    {
-      type: Schema.Types.ObjectId,
-      required: true,
-    },
-  ],
-  // lastMessageRead: {
-  //   type: Map,
-  //   of: Schema.Types.ObjectId,
-  // },
-
-  lastMessage: {
-    content: {
-      type: {
-        type: String,
-        enum: ["text", "image"],
-      },
-      data: {
-        type: String,
-      },
-    },
-    time: {
-      type: Date,
-    },
-  },
-
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-const Chatroom = mongoose.model("Chatroom", chatroomSchema);
+import { mongoose } from "mongoose";
+import Chatroom from "./schemas/chatroom_schema.js";
 
 const updateLastMessage = async (roomId, content) => {
   const now = new Date();
@@ -93,4 +54,4 @@ const queryChatroomList = async (userId) => {
   return chatroomList;
 };
 
-export { Chatroom, updateLastMessage, queryChatroomList };
+export { updateLastMessage, queryChatroomList };

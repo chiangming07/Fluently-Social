@@ -167,20 +167,31 @@ const ChatHeader = (props) => {
   const [search, setSearch] = useState("");
 
   const sendAbstract = async () => {
-    const id = toast.loading("Sending email, please check your mailbox later.");
-    const data = { roomId, myId };
-    const response = await api.sendAbstract(data);
-    if (response.status === 200)
-      toast.update(id, {
-        render: "Email sent successfully. Please check your mailbox!",
-        type: "success",
+    const id = toast.loading(
+      "Sending email, please check your mailbox later.",
+      {
         style: {
-          top: "100px",
+          top: "180px",
         },
-        icon: "🌱",
-        isLoading: false,
-        autoClose: 5000,
-      });
+      }
+    );
+    const data = { roomId, senderId: myId };
+    const response = await api.sendAbstract(data);
+    console.log(response);
+    const message = response.data
+      ? "Email sent successfully. Please check your mailbox!"
+      : "Sorry, there are no conversations available for today. We are unable to send a summary email without any conversations.";
+
+    toast.update(id, {
+      render: message,
+      type: response.data ? "success" : "error",
+      style: {
+        top: "180px",
+      },
+      icon: "🌱",
+      isLoading: false,
+      autoClose: 3000,
+    });
   };
 
   const searchKeyDown = (e) => {
@@ -227,8 +238,8 @@ const ChatHeader = (props) => {
           ></TextInput>
         </SearchHistory>
         <Abstract
-          onClick={(e) => {
-            sendAbstract(e);
+          onClick={() => {
+            sendAbstract();
           }}
           icon={robot}
         />

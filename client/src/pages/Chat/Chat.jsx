@@ -129,17 +129,15 @@ const Chat = () => {
             const formattedDate = `${year}/${month}/${day} ${hour}:${minute}`;
             room.lastMessage.time = formattedDate;
           });
-
           setChatroomList(response.data);
           socket.emit("join-room-list", response.data);
-          // TODO: 一次 query 出來會不會比較好？
           const chatroom = response.data.find((list) => list.roomId === roomId);
           if (chatroom) {
             setPartnerData(chatroom.memberInfo);
           }
         }
       } catch (e) {
-        console.log(e.response.data.message);
+        console.log(e);
         errorNotify("Connection timed out. Please log in again.");
         return;
       }
@@ -160,6 +158,7 @@ const Chat = () => {
   useEffect(() => {
     const updateChatroomList = (message) => {
       const { roomId, content, type } = message;
+      const timestamp = dayjs().format("YYYY/MM/DD HH:mm");
       if (chatroomList.length === 0) return;
       const hasChatroom = chatroomList.some(
         (chatroom) => chatroom.roomId === roomId
@@ -199,9 +198,8 @@ const Chat = () => {
       // setChatroomList(updatedList);
     };
 
-    const timestamp = dayjs().format("YYYY/MM/DD HH:mm");
-
     socket.on("text message", (message) => {
+      const timestamp = dayjs().format("YYYY/MM/DD HH:mm");
       message.type = "text";
       if (message.roomId === roomId) {
         setChat((chat) => [
@@ -220,6 +218,7 @@ const Chat = () => {
     });
 
     socket.on("image message", (message) => {
+      const timestamp = dayjs().format("YYYY/MM/DD HH:mm");
       message.type = "image";
       if (message.roomId === roomId) {
         setChat((chat) => [

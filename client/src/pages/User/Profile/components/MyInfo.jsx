@@ -117,7 +117,11 @@ const MyInfo = (props) => {
     });
   };
   const errorNotify = (msg) => {
-    toast.error(msg);
+    toast.error(msg, {
+      style: {
+        top: "100px",
+      },
+    });
   };
 
   const fileInputRef = useRef(null);

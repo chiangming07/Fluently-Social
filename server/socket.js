@@ -33,7 +33,8 @@ const createSocketServer = (server) => {
       message.type = "text message";
       await publishToExchange("fanout_exchange", message);
       saveMessage(senderId, content, roomId, "text");
-      updateLastMessage(roomId, message.content);
+      const lastMessage = { type: "text", data: content };
+      updateLastMessage(roomId, lastMessage);
     });
 
     socket.on("image message", async (message) => {
@@ -41,7 +42,8 @@ const createSocketServer = (server) => {
       message.type = "image message";
       await publishToExchange("fanout_exchange", message);
       saveMessage(senderId, content, roomId, "image");
-      updateLastMessage(roomId, message.content);
+      const lastMessage = { type: "image", data: content };
+      updateLastMessage(roomId, lastMessage);
     });
 
     // Anonymouse Chat

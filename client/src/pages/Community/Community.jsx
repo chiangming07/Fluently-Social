@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { isNearMeAtom } from "../../recoil/atoms";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -234,9 +236,10 @@ const Button = styled.div`
 
 const Community = () => {
   const navigate = useNavigate();
+  const [isNearMe, setIsNearMe] = useRecoilState(isNearMeAtom);
+
   const [users, setUsers] = useState([]);
   const [myId, setMyId] = useState("");
-  const [isNearMe, setIsNearMe] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isFetchingLocation, setIsFetchingLocation] = useState(false);
 
@@ -259,11 +262,11 @@ const Community = () => {
           });
           if (!position) return;
           const { latitude, longitude } = position.coords;
-          const nearbyUsers = await api.fetchNearbyUsers({
-            userId: id,
-            latitude,
-            longitude,
-          });
+
+          const data = { userId: id, latitude, longitude };
+          const accessToken = localStorage.getItem("accessToken");
+          const nearbyUsers = await api.fetchNearbyUsers(data, accessToken);
+
           setUsers(nearbyUsers.data.nearbyUsersData);
           setIsLoading(false);
           return;
@@ -284,7 +287,8 @@ const Community = () => {
 
   const handleStartChat = async (partnerId) => {
     const data = { myId, partnerId };
-    const response = await api.getRoomId(data);
+    const accessToken = localStorage.getItem("accessToken");
+    const response = await api.getRoomId(data, accessToken);
     const roomId = response.data.roomId;
     navigate(`/chat/${roomId}`);
   };

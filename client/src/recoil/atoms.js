@@ -6,6 +6,11 @@ export const isLoggedInAtom = atom({
 });
 
 export const profileAvatarAtom = atom({
-  key: "profileAvatar",
+  key: "profileAvatarAtom",
   default: "",
+});
+
+export const isNearMeAtom = atom({
+  key: "isNearMeAtom",
+  default: false,
 });

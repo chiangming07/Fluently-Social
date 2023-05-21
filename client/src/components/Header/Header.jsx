@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { isLoggedInAtom, profileAvatarAtom } from "../../recoil/atoms";
+import {
+  isLoggedInAtom,
+  profileAvatarAtom,
+  isNearMeAtom,
+} from "../../recoil/atoms";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -119,10 +123,6 @@ const ProfileAvatar = styled.img`
 
 const categories = [
   {
-    name: "community",
-    displayText: "Community",
-  },
-  {
     name: "chat",
     displayText: "Chat",
   },
@@ -137,6 +137,7 @@ function Header() {
   const [searchParams] = useSearchParams();
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInAtom);
   const [profileAvatar, setProfileAvatar] = useRecoilState(profileAvatarAtom);
+  const [isNearMe, setIsNearMe] = useRecoilState(isNearMeAtom);
 
   const [inputValue, setInputValue] = useState("");
   const category = searchParams.get("category");
@@ -184,6 +185,14 @@ function Header() {
       <Logo to="/" />
       <Navbar>
         <CategoryLinks>
+          <CategoryLink
+            onClick={() => {
+              setIsNearMe(false);
+              navigate("/community");
+            }}
+          >
+            community
+          </CategoryLink>
           {categories.map(({ name, displayText }, index) => (
             <CategoryLink
               $isActive={category === name}
@@ -207,7 +216,7 @@ function Header() {
               errorNotify("Please log in to continue.");
               return;
             }
-            navigate("./profile");
+            navigate("/profile");
           }}
           alt="avatar"
         />

@@ -89,7 +89,8 @@ const MessageInput = (props) => {
     const file = fileInputRef.current.files[0];
     if (!file) return;
     try {
-      const response = await api.getPresignedURL();
+      const accessToken = localStorage.getItem("accessToken");
+      const response = await api.getPresignedURL(accessToken);
       const { URL } = response.data;
 
       await api.uploadToS3(URL, file);

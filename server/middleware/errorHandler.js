@@ -32,6 +32,10 @@ class CustomError extends Error {
   static tooManyRequestsError(message) {
     return new CustomError(message, StatusCodes.TOO_MANY_REQUESTS);
   }
+
+  static internalServerError(message) {
+    return new CustomError(message, StatusCodes.INTERNAL_SERVER_ERROR);
+  }
 }
 
 const errorHandler = (err, req, res, next) => {

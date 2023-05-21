@@ -48,13 +48,11 @@ const matchPartner = async (req, res) => {
 
   if (waitingList.length === 0) {
     const success = await addToWaitingList(myKey, socketId);
-    // FIXME: 以下要寫嗎？還是報錯直接丟給最外層就好
     if (!success) {
-      return res.status(500).json({
-        error: "Failed to add user to waiting list.",
-      });
+      throw CustomError.internalServerError(
+        "Failed to add user to waiting list."
+      );
     }
-
     return res.json({
       msg: "Added to the waiting list. Please wait for a match.",
     });

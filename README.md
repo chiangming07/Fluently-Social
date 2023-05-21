@@ -1,4 +1,4 @@
-<h1 align="center">
+<h1 id="top" align="center">
   Fluently 🌱
 </h1>
 
@@ -10,46 +10,87 @@ Fluently is a language exchange platform designed to optimize learning efficienc
 
 ---
 
+<br>
+
 <p align="center">
   <a href="#website-and-demo-account">Website & Demo Account</a>  •
   <a href="#key-features">Key Features</a> •
   <a href="#architecture">Architecture</a> •
+  <a href="#mongodb-data-model">MongoDB Data Model</a> •
   <a href="#technologies">Technologies</a>
 </p>
 
+<br>
+
 ![community](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/community.png)
 
-![chatroom](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/chatroom.png)
+<br>
 
-## Website and Demo Account
+<h2 id="website-and-demo-account">🌱 Website and Test Account</h2>
+
+---
 
 Website: [https://fluently.social](https://fluently.social)
 
-You can use the following demo account to explore the Fluently platform:
+You can use test accounts below to explore the Fluently platform:
 
 |        Email        | Password |
 | :-----------------: | :------: |
 | admin@fluently.com  | admin123 |
 | admin2@fluently.com | admin123 |
 
-## Key Features
+<br>
+
+<h2 id="key-features">🌱 Key Features</h2>
+
+---
 
 - ### Algorithm
   - Sort community page members based on their chosen topics
 - ### Chat
+
   - Connect with language learning partners through real-time messaging
+
+    ![chatroom](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/chat.gif)
+
   - Engage in anonymous chat conversations without any concerns
+
+    ![anonymous](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/anonymous.gif)
+
 - ### Search & Summarization
+
   - Search and Highlight keyword
   - Summarize daily chat conversations and identify relevant vocabulary in email
+
+    ![summary](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/summary.gif)
+
 - ### Near Me
+
   - Discover and connect with users in proximity
 
-## Architecture
+    ![nearme](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/nearme.gif)
 
-![architecture](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/architecture.png)
+<br>
 
-## Technologies
+<h2 id="architecture">🌱 Architecture</h2>
+
+---
+
+![architecture](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/fluently_readme.png)
+
+<br>
+
+<h2 id="mongodb-data-model">🌱 MongoDB Data Model (Schema)</h2>
+
+---
+
+![DB](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/fluently_DB_diagram.png)
+
+<br>
+
+<h2 id="technologies">🌱 Technologies</h2>
+
+---
 
 - ### Front-end Technologies
 
@@ -89,6 +130,10 @@ You can use the following demo account to explore the Fluently platform:
 - ### Third-party API Integrations
   - OpenAI API
   - Mailgun API
+
+<div style="text-align: right;">
+  <a href="#top" style="display: inline-block; padding: 10px 20px; background-color: rgb(99, 137, 95); color: #fff; border-radius:8px; text-decoration: none;">Back to top</a>
+</div>
 
 ---
 

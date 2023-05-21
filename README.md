@@ -39,6 +39,11 @@ You can use test accounts below to explore the Fluently platform:
 | admin@fluently.com  | admin123 |
 | admin2@fluently.com | admin123 |
 
+> **Note**
+>
+> 1. In the chatroom, fluently.social provides a "summary" feature. If you would like to receive summaries via email, please sign up with an email address that can receive them.
+> 2. For testing purposes, the restriction based on last login time has been temporarily disabled. (originally users who hadn't logged in for five days would not be displayed in the user list.)
+
 <br>
 
 <h2 id="key-features">🌱 Key Features</h2>
@@ -46,27 +51,29 @@ You can use test accounts below to explore the Fluently platform:
 ---
 
 - ### Algorithm
-  - Sort community page members based on their chosen topics
+
+  - Sort community page members based on their chosen topics (`Jaccard Similarity`)
+
 - ### Chat
 
-  - Connect with language learning partners through real-time messaging
+  - Connect with language learning partners through real-time messaging (`Socket.IO & RabbitMQ`)
 
     ![chatroom](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/chat.gif)
 
-  - Engage in anonymous chat conversations without any concerns
+  - Engage in anonymous chat conversations without any concerns (`Redis`)
 
     ![anonymous](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/anonymous.gif)
 
 - ### Search & Summarization
 
-  - Search and Highlight keyword
+  - Search and Highlight keyword (`MongoDB Atlas Search index`)
   - Summarize daily chat conversations and identify relevant vocabulary in email
 
     ![summary](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/summary.gif)
 
 - ### Near Me
 
-  - Discover and connect with users in proximity
+  - Discover and connect with users in proximity (`Redis geospatial indexes`)
 
     ![nearme](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/nearme.gif)
 

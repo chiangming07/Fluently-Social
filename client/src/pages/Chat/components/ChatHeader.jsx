@@ -176,8 +176,8 @@ const ChatHeader = (props) => {
       }
     );
     const data = { roomId, senderId: myId };
-    const response = await api.sendAbstract(data);
-    console.log(response);
+    const accessToken = localStorage.getItem("accessToken");
+    const response = await api.sendAbstract(data, accessToken);
     const message = response.data
       ? "Email sent successfully. Please check your mailbox!"
       : "Sorry, there are no conversations available for today. We are unable to send a summary email without any conversations.";
@@ -200,7 +200,8 @@ const ChatHeader = (props) => {
       if (search) {
         setSearch("");
         const sortChatHistory = async (roomId, search) => {
-          const response = await api.searchHistory(roomId, search);
+          const accessToken = localStorage.getItem("accessToken");
+          const response = await api.searchHistory(roomId, search, accessToken);
 
           const searchResult = response.data.map((msg) => {
             const time = dayjs(msg.createdAt).format("YYYY/MM/DD HH:mm");
@@ -223,7 +224,6 @@ const ChatHeader = (props) => {
       <Partner>
         <Avatar src={partnerData.avatar}></Avatar>
         <PartnerName>{partnerData.username}</PartnerName>
-        {/* <PartnerStatus></PartnerStatus> */}
       </Partner>
       <Tool>
         <SearchHistory>

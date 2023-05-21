@@ -44,31 +44,45 @@ const api = {
     );
     return response;
   },
-  async getRoomId(data) {
+  async getRoomId(data, accessToken) {
     const response = await axios.post(`${this.hostname}/chat/room-id`, data, {
       headers: {
         "Content-Type": "application/json",
+        Authorization: "Bearer " + accessToken,
       },
     });
     return response;
   },
-  async getChatHistory(roomId, paging) {
+  async getChatHistory(roomId, paging, accessToken) {
     const response = await axios.get(
-      `${this.hostname}/chat/history?roomId=${roomId}&paging=${paging}`
+      `${this.hostname}/chat/history?roomId=${roomId}&paging=${paging}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + accessToken,
+        },
+      }
     );
     return response;
   },
-  async sendAbstract(data) {
+  async sendAbstract(data, accessToken) {
     const response = await axios.post(`${this.hostname}/chat/abstract`, data, {
       headers: {
         "Content-Type": "application/json",
+        Authorization: "Bearer " + accessToken,
       },
     });
     return response;
   },
-  async searchHistory(roomId, search) {
+  async searchHistory(roomId, search, accessToken) {
     const response = await axios.get(
-      `${this.hostname}/chat/search-history?roomId=${roomId}&keyword=${search}`
+      `${this.hostname}/chat/search-history?roomId=${roomId}&keyword=${search}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + accessToken,
+        },
+      }
     );
     return response;
   },
@@ -101,13 +115,14 @@ const api = {
     });
     return response;
   },
-  async matchPartner(data) {
+  async matchPartner(data, accessToken) {
     const response = await axios.post(
       `${this.hostname}/chat/anonymous/match`,
       data,
       {
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + accessToken,
         },
         withCredentials: true,
         credentials: "include",
@@ -115,12 +130,13 @@ const api = {
     );
     return response;
   },
-  async clearMatch() {
+  async clearMatch(accessToken) {
     const response = await axios.delete(
       `${this.hostname}/chat/anonymous/clearMatch`,
       {
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + accessToken,
         },
         withCredentials: true,
         credentials: "include",
@@ -136,13 +152,14 @@ const api = {
     });
     return response;
   },
-  async fetchNearbyUsers(data) {
+  async fetchNearbyUsers(data, accessToken) {
     const response = await axios.post(
       `${this.hostname}/community/nearme`,
       data,
       {
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + accessToken,
         },
       }
     );

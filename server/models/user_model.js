@@ -117,11 +117,12 @@ const queryAllUsers = async (speaking, learning) => {
                   "speaking.language": pair.language,
                 })),
               },
-              {
-                loginAt: {
-                  $gte: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-                },
-              },
+              // Temporarily disable the restriction of last-login-time for testers.
+              // {
+              //   loginAt: {
+              //     $gte: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+              //   },
+              // },
             ],
           },
           {
@@ -140,7 +141,8 @@ const queryNearbyUsers = async (nearbyUsers) => {
   const users = await User.find(
     {
       _id: { $in: nearbyUsers },
-      loginAt: { $gte: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) },
+      // Temporarily disable the restriction of last-login-time for testers.
+      // loginAt: { $gte: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) },
     },
     {
       username: 1,

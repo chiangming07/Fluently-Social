@@ -90,8 +90,9 @@ const MessagesComponent = (props) => {
   // 取得歷史聊天記錄
   useEffect(() => {
     setHistory([]);
-    const getChatHistory = async (roomId, paging) => {
-      const response = await api.getChatHistory(roomId, paging);
+
+    const renderChatHistory = async (roomId, paging, accessToken) => {
+      const response = await api.getChatHistory(roomId, paging, accessToken);
       const chatHistory = response.data.messages.map((msg) => {
         const time = dayjs(msg.createdAt).format("YYYY/MM/DD HH:mm");
         return {
@@ -110,7 +111,8 @@ const MessagesComponent = (props) => {
       setPaging((prevPaging) => prevPaging + 1);
       setHasMore(chatHistory.length > 0);
     };
-    getChatHistory(roomId, paging);
+    const accessToken = localStorage.getItem("accessToken");
+    renderChatHistory(roomId, paging, accessToken);
 
     if (hasMore && earlyMessagesRef.current) {
       const messageContainer = earlyMessagesRef.current;
@@ -120,7 +122,7 @@ const MessagesComponent = (props) => {
       const scrollHeight = messageContainer.scrollHeight;
 
       if (scrollHeight - (scrollTop + containerHeight) < threshold) {
-        api.getChatHistory(roomId, paging);
+        api.getChatHistory(roomId, paging, accessToken);
       }
     }
     // }, [hasMore, earlyMessagesRef, paging]);

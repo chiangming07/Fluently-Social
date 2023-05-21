@@ -6,7 +6,7 @@ import { CustomError } from "../middleware/errorHandler.js";
 
 const authentication = (req, res, next) => {
   if (!req.headers["authorization"])
-    throw CustomError.UnauthorizedError("Not token.");
+    throw CustomError.UnauthorizedError("No token.");
 
   const token = req.headers["authorization"].split(" ")[1];
 

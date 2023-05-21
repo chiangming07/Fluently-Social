@@ -98,8 +98,6 @@ const Anonymous = () => {
     });
   }, []);
 
-  useEffect(() => {});
-
   const successNotify = (msg) => {
     toast.success(msg, {
       style: {
@@ -116,23 +114,6 @@ const Anonymous = () => {
     });
   };
 
-  //TODO: 清掉
-  //   useEffect(() => {
-  //     const clearSocketId = async () => {
-  //       window.addEventListener("beforeunload", async () => {
-  //         console.log("正在清除 socket");
-  //         const response = await api.clearMatch();
-  //         console.log(response);
-  //       });
-  //     };
-
-  //     clearSocketId();
-
-  //     return () => {
-  //       window.removeEventListener("beforeunload");
-  //     };
-  //   }, []);
-
   const handleMatch = async () => {
     if (!speaking[0] || !learning[0]) {
       errorNotify(
@@ -146,7 +127,8 @@ const Anonymous = () => {
       learning: languageMap[learning[0].language],
     };
     try {
-      const response = await api.matchPartner(data);
+      const accessToken = localStorage.getItem("accessToken");
+      const response = await api.matchPartner(data, accessToken);
       if (response.data.roomId) {
         return;
       }
@@ -160,12 +142,13 @@ const Anonymous = () => {
   };
 
   const handleClear = async () => {
-    if (!speaking[0] || !learning[0]) {
+    if (!speaking[0].language || !learning[0].language) {
       errorNotify("You are not in the waiting list. Please try again later.");
       return;
     }
     try {
-      const response = await api.clearMatch();
+      const accessToken = localStorage.getItem("accessToken");
+      const response = await api.clearMatch(accessToken);
       if (response.status === 200) {
         setSpeaking([{ language: "" }]);
         setLearning([{ language: "" }]);

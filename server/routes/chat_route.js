@@ -16,16 +16,15 @@ import {
   clearMatch,
 } from "../controllers/anonymous_controller.js";
 
-// TODO: 補上 authentication
-router.route("/chat/room-id").post(getRoomId);
+router.route("/chat/room-id").post(authentication, getRoomId);
 router.route("/chat/chatroom-list/:userId").get(getChatroomList);
-router.route("/chat/abstract").post(sendAbstract);
-router.route("/chat/history").get(getHistory);
-router.route("/chat/search-history").get(searchHistory);
-router.route("/chat/upload-s3").get(getUploadURL);
+router.route("/chat/abstract").post(authentication, sendAbstract);
+router.route("/chat/history").get(authentication, getHistory);
+router.route("/chat/search-history").get(authentication, searchHistory);
+router.route("/chat/upload-s3").get(authentication, getUploadURL);
 
 // anonymous
-router.route("/chat/anonymous/match").post(matchPartner);
-router.route("/chat/anonymous/clearMatch").delete(clearMatch);
+router.route("/chat/anonymous/match").post(authentication, matchPartner);
+router.route("/chat/anonymous/clearMatch").delete(authentication, clearMatch);
 
 export { router };

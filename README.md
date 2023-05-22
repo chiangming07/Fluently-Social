@@ -58,24 +58,24 @@ You can use test accounts below to explore the Fluently platform:
 
   - Connect with language learning partners through real-time messaging (`Socket.IO & RabbitMQ`)
 
-    ![chatroom](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/chat.gif)
+    ![chatroom](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/chat_1.gif)
 
   - Engage in anonymous chat conversations without any concerns (`Redis`)
 
-    ![anonymous](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/anonymous.gif)
+    ![anonymous](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/anonymous_1.gif)
 
 - ### Search & Summarization
 
   - Search and Highlight keyword (`MongoDB Atlas Search index`)
   - Summarize daily chat conversations and identify relevant vocabulary in email
 
-    ![summary](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/summary.gif)
+    ![summary](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/summary_1.gif)
 
 - ### Near Me
 
   - Discover and connect with users in proximity (`Redis geospatial indexes`)
 
-    ![nearme](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/nearme.gif)
+    ![nearme](https://fluently-upload-s3-bucket.s3.ap-northeast-1.amazonaws.com/nearme_1.gif)
 
 <br>
 
@@ -138,8 +138,8 @@ You can use test accounts below to explore the Fluently platform:
   - OpenAI API
   - Mailgun API
 
-<div style="text-align: right;">
-  <a href="#top" style="display: inline-block; padding: 10px 20px; background-color: rgb(99, 137, 95); color: #fff; border-radius:8px; text-decoration: none;">Back to top</a>
+<div align="center">
+  <a href="#top">Back to top</a>
 </div>
 
 ---

@@ -8,7 +8,7 @@ import { saveMessage } from "./models/message_model.js";
 import { updateLastMessage } from "./models/chatroom_model.js";
 
 import { consumeFromQueue, publishToExchange } from "./utils/pubsub.js";
-console.log(process.env.FRONTEND_DOMAIN);
+
 const io = new Server({
   cors: {
     origin: process.env.FRONTEND_DOMAIN,

@@ -13,7 +13,7 @@ Fluently is a language exchange platform designed to optimize learning efficienc
 <br>
 
 <p align="center">
-  <a href="#website-and-demo-account">Website & Demo Account</a>  •
+  <a href="#website-and-demo-account">Website</a>  •
   <a href="#key-features">Key Features</a> •
   <a href="#architecture">Architecture</a> •
   <a href="#mongodb-data-model">MongoDB Data Model</a> •
@@ -26,18 +26,18 @@ Fluently is a language exchange platform designed to optimize learning efficienc
 
 <br>
 
-<h2 id="website-and-demo-account">🌱 Website and Test Account</h2>
+<h2 id="website-and-demo-account">🌱 Website (Currently Inactive)</h2>
 
 ---
 
-Website: [https://fluently.social](https://fluently.social)
+<!-- Website: [https://fluently.social](https://fluently.social)
 
 You can use test accounts below to explore the Fluently platform:
 
 |        Email        | Password |
 | :-----------------: | :------: |
 | admin@fluently.com  | admin123 |
-| admin2@fluently.com | admin123 |
+| admin2@fluently.com | admin123 | -->
 
 > **Note**
 >

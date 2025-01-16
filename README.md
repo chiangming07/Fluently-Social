@@ -28,6 +28,8 @@ Fluently is a language exchange platform designed to optimize learning efficienc
 
 <h2 id="website-and-demo-account">🌱 Website (Currently Inactive)</h2>
 
+[Demo Video](https://reurl.cc/p9Xlk8)
+
 ---
 
 <!-- Website: [https://fluently.social](https://fluently.social)
